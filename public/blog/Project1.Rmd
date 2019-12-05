@@ -1,0 +1,158 @@
+---
+title: "Project 1: Exploratory Data Analysis"
+author: "SDS348 Fall 2019"
+date: ""
+output: 
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## HaoTing Huang  hh25923
+
+```{r Introduction}
+#data(package = .packages(all.available = TRUE))
+library(datasets)
+library(dplyr)
+library(ggplot2)
+library(fivethirtyeight)
+library(tidyr)
+police_killings        
+?police_locals
+head(police_killings)
+head(police_locals)
+
+```
+*I use police_killings and police_locals as my two datasets for this project. I acquired the datasets from R package. police_killings have 467 observation representing people who died from interactions with police in 2015. There are 34 variables, including name, age, gender etc. I plan to select some variables form these dataset that associated with the variabe with my second dataset, police_locals. Police_locals dataset represening the percentage of the police that live in the cities they serve. There are 75 observations and 8 variables includeing city, force_size, all, and 5 different races. Missing values in this dataset mean that there are fewer than 100 police officers of that race serving that city. The reason that these two dataset are interesting to me is that I want to know whether the police kill more people in the city that they serve and the correlation of the total force size and the number of fatal cases.*
+
+
+
+
+
+```{r Tidying: Rearranging Wide/Long }
+
+police_killings_tidy <- police_killings %>% select(city,state,age,gender,"killedRace"= raceethnicity)
+police_killings_tidy
+police_locals_tidy <- police_locals %>% pivot_longer(cols = c(3:8), names_to = "PoliceRace", values_to = "per_live_local") %>% group_by(city) %>% filter(PoliceRace == "all")
+police_locals_tidy <- police_locals_tidy %>% select(-PoliceRace)
+police_locals_tidy
+```
+*For police_killings, I select variables city, state, age, gender, and raceethnicity and assigne a new dataset called police_killings_tidy. I rename raceethnicity to killedRace. I think these variables are assiciated with the police_locals dataset. For police_locals dataset. I use pivot_longer to tidy the dataset as names_to = "race", values_to = "per_live_local". I assign the tidy version to a new name called police_locals_tidy. I filter PoliceRace == "all" in order to see the overall percentage of the police that serve in the city. Then I unselect PoliceRace to get my final police_locals_tidy dataset.*
+
+```{r Joining/Merging}
+
+LeftJoin <- left_join(police_killings_tidy,police_locals_tidy, by=c("city" = "city"))
+LeftJoin
+
+```
+*I use "left_join(police_killings_tidy,police_locals_tidy, by=c("city" = "city"))" to join my datasets becuase both datasets have variable "city". The police_killings dataset has the variables per_live_local and force_size, which are the variables I want to observe. Therefore, using left join can keep these variables in the merged dataset (LeftJoint).*
+
+
+```{r Wrangling}
+# Use all six core dplyr functions (filter, select, arrange, group_by, mutate, summarize) to manipulate and explore your dataset.
+LeftJoin <-LeftJoin  %>% filter(per_live_local != "NA") %>% select(-state) 
+LeftJoin
+# Use mutate to generate a variable that is a function of at least one other variable
+# --> I use mutate to generate the police size (pol_Live_local) in the city and round the per_live_local
+#    and pol_Live_local.
+LeftJoin <- LeftJoin %>% mutate(pol_Live_local = force_size * per_live_local) %>%
+  mutate_at(vars(per_live_local), funs(round(.,3))) %>% mutate_at(vars(pol_Live_local), funs(round(.,0)))
+LeftJoin
+
+
+# Compute at least 10 different summary statistics using 
+# summarize and summarize with group_by 
+# At least 2 of these should group by a categorical variable
+
+# 1.--> mean age was calculated and group by city.
+LeftJoin%>% group_by(city)%>% summarise(meanAgeKilled = mean(age)) %>% arrange(meanAgeKilled)
+
+# 2.--> I summarise the people that were killed in 2015 by police and group by gender.
+LeftJoin%>% group_by(gender)%>% summarise(n=n())
+
+
+# 3. --> I also summarise the people were killed in 2015 by police and group by race.
+LeftJoin %>% group_by(killedRace) %>% summarise(n=n())
+
+
+# 4. --> I summarise the number of cases in each city and group by city, force size and the number of police that live in that city.
+LeftJoin %>% group_by(city, force_size, pol_Live_local) %>% summarise(case=n()) %>%
+  arrange(desc(case))
+
+# 5. --> I calculate the mean of the police force size in this 22 cities
+LeftJoin %>% distinct(city,force_size) %>%
+  summarise(mean_force_size=mean(force_size, na.rm=T),n_cities=n_distinct(city))
+
+
+# 6. --> create a correlation matrix with cor() on your numeric variables
+LeftJoin %>% group_by(per_live_local, force_size) %>% summarise(killingCase=n()) %>% cor()
+```
+*I drop the rows which have NA in the per_love_local variable. This can simplfy the merged dataset (LeftJoin) but might also drop some observation. I also unselect the variable "state" becuase the per_live_local is the variable that the percentage of police in the city, not state. *
+*I use mutate to generate the police size (pol_Live_local) in the city and round the per_live_local and pol_Live_local.*
+*Mean age was calculated and group by city. I also summarise the people that were killed in 2015 by police and group by gender.Another grouping is based on race. I summarise the number of cases in each city and group by city, force size and the number of police that live in that city. I summarise the number of cases in each city and group by city, force size and the number of police that live in that city so that I can obersve the relationship between the police size and number of case in the city.*
+*I calculate the mean of the police force size in this 22 cities. Finally, I create a correlation matrix*
+
+ 
+
+```{r Visualizing}
+
+CaseNumber<-LeftJoin %>% group_by(city, force_size, pol_Live_local,per_live_local) %>% summarise(case=n()) %>%
+  arrange(desc(case))
+CaseNumber
+Forplot <-CaseNumber %>% select(city,force_size,case) 
+Forplot
+
+plot1 <-ggplot(Forplot, aes(x = case,y = force_size, fill = city)) + geom_histogram(stat = "summary",)+
+  scale_x_continuous(breaks = seq(0,10,by=1)) + 
+  labs(title = "Fatal Interaction Cases vs. Police Force Size", x = "Number of Police Killing Case", y = "Police Force Size")
+ plot1
+ 
+Forplot2<- Forplot %>% mutate(pol_live_local_inHundred = round((pol_Live_local / 100),0))
+
+plot2 <-ggplot(Forplot2,aes(pol_live_local_inHundred, case, color=city)) +geom_point(stat = "summary",size=2,shape=13) +
+  scale_y_continuous(breaks = seq(0,10,by=1)) +
+  scale_x_continuous(breaks = seq(0,300,by=30))+
+  labs(title = "Ploices Live in Local (in hundred) vs. Fatal Interaction Cases", x = "Number of Police Live in City They Serve", y = "Number of Police Killing Case")
+
+plot2
+
+```
+*I create another dataset called CaseNumber. This dataset includes the case happened in each city. The CaseNumber dataset will be modified to two dataset, Forplot and Forplot2 to gerenate the plots. Plot1 is the histogram of Fatal Interaction Cases vs. Police Force Size. the x axis is Number of Police killing case, the y axis is police force size. The bars are colored based on different cities.*
+*For plot2 is the scatter plot of Ploices Live in Local (in hundred) vs. Fatal Interaction Cases. x axis is the nuber of police live in city they serve and the y axis is the numbr of police killing case. Based on this plot we can see clearly that the number of plice live in the city is not positive correlation with the number of police killing case.*
+
+
+```{r Dimensionality Reduction}
+
+library(cluster)
+
+
+Project_clust_data <- CaseNumber%>%ungroup() %>% select(-city)%>%dplyr::select(force_size, pol_Live_local,case)
+Project_clust_data 
+
+wss1<-vector()
+for(i in 1:10){
+  temp1<- Project_clust_data  %>% dplyr::select(force_size, pol_Live_local,case) %>% kmeans(.,i)
+  temp1
+  wss1[i] <-temp1$tot.withinss
+}
+ggplot()+geom_point(aes(x=1:10,y=wss1))+geom_path(aes(x=1:10,y=wss1))+
+  xlab("clusters")+scale_x_continuous(breaks=1:10)
+
+
+Project_kmeans1 <- Project_clust_data  %>% kmeans(3)
+Project_kmeans1
+
+Project_kmeans_clust<-Project_clust_data%>%mutate(cluster=as.factor(Project_kmeans1$cluster))
+Project_kmeans_clust
+
+
+Project_kmeans_clust%>%mutate(city = CaseNumber$city) %>%ggplot(aes(case,pol_Live_local,color = city,shape=cluster))+geom_point(size = 3) +scale_x_continuous(breaks = seq(0,10,by=1)) +
+  labs(title = "K-means 1", x = "Police Killing Case", y = "Polices Live in Local")
+
+Project_kmeans_clust%>%mutate(city = CaseNumber$city) %>%ggplot(aes(case,force_size,color = city,shape=cluster))+geom_point(size = 3) +scale_x_continuous(breaks = seq(0,10,by=1)) +
+  labs(title = "K-means 2", x = "Police Killing Case", y = "Police Force Size")
+```
+*I choose to use k mean clustering for this project. I first use Silhouette width in k-means to determine the reasonalbe number if cluster. Based on the graph, I pick 3 clusters for my k-means. I pick three variable, force size, polices live in the local, and case for my cluster means. I then visualize the clusters in scatter plot using case as x axis and polices live in local as y axis. The different shapes represent different clusters and the colors of the points represent different cities. Another k-mean plot is case vs. force size. We can see that in both plots, cluster 1 is higher than others in Y axis. cluser 3 is higher than others in X axis. Cluster 2 generally lower than other in both axis.*

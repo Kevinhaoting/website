@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="HaoTing Huang" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 1: Exploratory Data Analysis</title>
+    <meta name="generator" content="Hugo 0.60.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/blog/project1/">Project 1: Exploratory Data Analysis</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="haoting-huang-hh25923" class="section level2">
+<h2>HaoTing Huang hh25923</h2>
+<pre class="r"><code>#data(package = .packages(all.available = TRUE))
+library(datasets)
+library(dplyr)</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.5.2</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(ggplot2)</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.5.2</code></pre>
+<pre class="r"><code>library(fivethirtyeight)</code></pre>
+<pre><code>## Warning: package &#39;fivethirtyeight&#39; was built under R version 3.5.2</code></pre>
+<pre class="r"><code>library(tidyr)</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 3.5.2</code></pre>
+<pre class="r"><code>police_killings        </code></pre>
+<pre><code>## # A tibble: 467 x 34
+##    name    age gender raceethnicity month   day  year streetaddress city 
+##    &lt;chr&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;         &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;
+##  1 A&#39;do…    16 Male   Black         Febr…    23  2015 Clearview Ln  Mill…
+##  2 Aaro…    27 Male   White         April     2  2015 300 block Ir… Pine…
+##  3 Aaro…    26 Male   White         March    14  2015 22nd Ave and… Keno…
+##  4 Aaro…    25 Male   Hispanic/Lat… March    11  2015 3000 Seminol… Sout…
+##  5 Adam…    29 Male   White         March    19  2015 364 Hiwood A… Munr…
+##  6 Adam…    29 Male   White         March     7  2015 18th St and … Phoe…
+##  7 Adri…    22 Male   Hispanic/Lat… March    27  2015 4000 Union A… Bake…
+##  8 Adri…    35 Male   Hispanic/Lat… March    26  2015 1500 Bayview… Wilm…
+##  9 Alan…    44 Male   White         Janu…    28  2015 Pickett Runn… Suns…
+## 10 Alan…    31 Male   White         Febr…     7  2015 200 Abbie St… Wyom…
+## # … with 457 more rows, and 25 more variables: state &lt;chr&gt;,
+## #   latitude &lt;dbl&gt;, longitude &lt;dbl&gt;, state_fp &lt;int&gt;, county_fp &lt;int&gt;,
+## #   tract_ce &lt;int&gt;, geo_id &lt;dbl&gt;, county_id &lt;int&gt;, namelsad &lt;chr&gt;,
+## #   lawenforcementagency &lt;chr&gt;, cause &lt;chr&gt;, armed &lt;chr&gt;, pop &lt;int&gt;,
+## #   share_white &lt;dbl&gt;, share_black &lt;dbl&gt;, share_hispanic &lt;dbl&gt;,
+## #   p_income &lt;int&gt;, h_income &lt;int&gt;, county_income &lt;int&gt;,
+## #   comp_income &lt;dbl&gt;, county_bucket &lt;int&gt;, nat_bucket &lt;int&gt;, pov &lt;dbl&gt;,
+## #   urate &lt;dbl&gt;, college &lt;dbl&gt;</code></pre>
+<pre class="r"><code>?police_locals
+head(police_killings)</code></pre>
+<pre><code>## # A tibble: 6 x 34
+##   name    age gender raceethnicity month   day  year streetaddress city 
+##   &lt;chr&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;         &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;
+## 1 A&#39;do…    16 Male   Black         Febr…    23  2015 Clearview Ln  Mill…
+## 2 Aaro…    27 Male   White         April     2  2015 300 block Ir… Pine…
+## 3 Aaro…    26 Male   White         March    14  2015 22nd Ave and… Keno…
+## 4 Aaro…    25 Male   Hispanic/Lat… March    11  2015 3000 Seminol… Sout…
+## 5 Adam…    29 Male   White         March    19  2015 364 Hiwood A… Munr…
+## 6 Adam…    29 Male   White         March     7  2015 18th St and … Phoe…
+## # … with 25 more variables: state &lt;chr&gt;, latitude &lt;dbl&gt;, longitude &lt;dbl&gt;,
+## #   state_fp &lt;int&gt;, county_fp &lt;int&gt;, tract_ce &lt;int&gt;, geo_id &lt;dbl&gt;,
+## #   county_id &lt;int&gt;, namelsad &lt;chr&gt;, lawenforcementagency &lt;chr&gt;,
+## #   cause &lt;chr&gt;, armed &lt;chr&gt;, pop &lt;int&gt;, share_white &lt;dbl&gt;,
+## #   share_black &lt;dbl&gt;, share_hispanic &lt;dbl&gt;, p_income &lt;int&gt;,
+## #   h_income &lt;int&gt;, county_income &lt;int&gt;, comp_income &lt;dbl&gt;,
+## #   county_bucket &lt;int&gt;, nat_bucket &lt;int&gt;, pov &lt;dbl&gt;, urate &lt;dbl&gt;,
+## #   college &lt;dbl&gt;</code></pre>
+<pre class="r"><code>head(police_locals)</code></pre>
+<pre><code>## # A tibble: 6 x 8
+##   city         force_size   all  white non_white black hispanic  asian
+##   &lt;chr&gt;             &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+## 1 New York          32300 0.618 0.446      0.764 0.771   0.763   0.749
+## 2 Chicago           12120 0.875 0.872      0.877 0.897   0.840   0.967
+## 3 Los Angeles       10100 0.228 0.153      0.264 0.387   0.218   0.305
+## 4 Washington         9340 0.116 0.0568     0.157 0.170   0.0899  0.231
+## 5 Houston            7700 0.292 0.174      0.399 0.366   0.457   0.408
+## 6 Philadelphia       6045 0.835 0.777      0.899 0.925   0.817  NA</code></pre>
+<p><em>I use police_killings and police_locals as my two datasets for this project. I acquired the datasets from R package. police_killings have 467 observation representing people who died from interactions with police in 2015. There are 34 variables, including name, age, gender etc. I plan to select some variables form these dataset that associated with the variabe with my second dataset, police_locals. Police_locals dataset represening the percentage of the police that live in the cities they serve. There are 75 observations and 8 variables includeing city, force_size, all, and 5 different races. Missing values in this dataset mean that there are fewer than 100 police officers of that race serving that city. The reason that these two dataset are interesting to me is that I want to know whether the police kill more people in the city that they serve and the correlation of the total force size and the number of fatal cases.</em></p>
+<pre class="r"><code>police_killings_tidy &lt;- police_killings %&gt;% select(city,state,age,gender,&quot;killedRace&quot;= raceethnicity)
+police_killings_tidy</code></pre>
+<pre><code>## # A tibble: 467 x 5
+##    city         state   age gender killedRace     
+##    &lt;chr&gt;        &lt;chr&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;          
+##  1 Millbrook    AL       16 Male   Black          
+##  2 Pineville    LA       27 Male   White          
+##  3 Kenosha      WI       26 Male   White          
+##  4 South Gate   CA       25 Male   Hispanic/Latino
+##  5 Munroe Falls OH       29 Male   White          
+##  6 Phoenix      AZ       29 Male   White          
+##  7 Bakersfield  CA       22 Male   Hispanic/Latino
+##  8 Wilmington   CA       35 Male   Hispanic/Latino
+##  9 Sunset       TX       44 Male   White          
+## 10 Wyoming      MI       31 Male   White          
+## # … with 457 more rows</code></pre>
+<pre class="r"><code>police_locals_tidy &lt;- police_locals %&gt;% pivot_longer(cols = c(3:8), names_to = &quot;PoliceRace&quot;, values_to = &quot;per_live_local&quot;) %&gt;% group_by(city) %&gt;% filter(PoliceRace == &quot;all&quot;)
+police_locals_tidy &lt;- police_locals_tidy %&gt;% select(-PoliceRace)
+police_locals_tidy</code></pre>
+<pre><code>## # A tibble: 75 x 3
+## # Groups:   city [75]
+##    city         force_size per_live_local
+##    &lt;chr&gt;             &lt;int&gt;          &lt;dbl&gt;
+##  1 New York          32300          0.618
+##  2 Chicago           12120          0.875
+##  3 Los Angeles       10100          0.228
+##  4 Washington         9340          0.116
+##  5 Houston            7700          0.292
+##  6 Philadelphia       6045          0.835
+##  7 Phoenix            4475          0.312
+##  8 San Diego          4460          0.362
+##  9 Dallas             3605          0.191
+## 10 Detroit            3265          0.371
+## # … with 65 more rows</code></pre>
+<p><em>For police_killings, I select variables city, state, age, gender, and raceethnicity and assigne a new dataset called police_killings_tidy. I rename raceethnicity to killedRace. I think these variables are assiciated with the police_locals dataset. For police_locals dataset. I use pivot_longer to tidy the dataset as names_to = “race”, values_to = “per_live_local”. I assign the tidy version to a new name called police_locals_tidy. I filter PoliceRace == “all” in order to see the overall percentage of the police that serve in the city. Then I unselect PoliceRace to get my final police_locals_tidy dataset.</em></p>
+<pre class="r"><code>LeftJoin &lt;- left_join(police_killings_tidy,police_locals_tidy, by=c(&quot;city&quot; = &quot;city&quot;))
+LeftJoin</code></pre>
+<pre><code>## # A tibble: 467 x 7
+##    city         state   age gender killedRace     force_size per_live_local
+##    &lt;chr&gt;        &lt;chr&gt; &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;               &lt;int&gt;          &lt;dbl&gt;
+##  1 Millbrook    AL       16 Male   Black                  NA         NA    
+##  2 Pineville    LA       27 Male   White                  NA         NA    
+##  3 Kenosha      WI       26 Male   White                  NA         NA    
+##  4 South Gate   CA       25 Male   Hispanic/Lati…         NA         NA    
+##  5 Munroe Falls OH       29 Male   White                  NA         NA    
+##  6 Phoenix      AZ       29 Male   White                4475          0.312
+##  7 Bakersfield  CA       22 Male   Hispanic/Lati…         NA         NA    
+##  8 Wilmington   CA       35 Male   Hispanic/Lati…         NA         NA    
+##  9 Sunset       TX       44 Male   White                  NA         NA    
+## 10 Wyoming      MI       31 Male   White                  NA         NA    
+## # … with 457 more rows</code></pre>
+<p><em>I use “left_join(police_killings_tidy,police_locals_tidy, by=c(”city&quot; = “city”))&quot; to join my datasets becuase both datasets have variable “city”. The police_killings dataset has the variables per_live_local and force_size, which are the variables I want to observe. Therefore, using left join can keep these variables in the merged dataset (LeftJoint).</em></p>
+<pre class="r"><code># Use all six core dplyr functions (filter, select, arrange, group_by, mutate, summarize) to manipulate and explore your dataset.
+LeftJoin &lt;-LeftJoin  %&gt;% filter(per_live_local != &quot;NA&quot;) %&gt;% select(-state) 
+LeftJoin</code></pre>
+<pre><code>## # A tibble: 61 x 6
+##    city            age gender killedRace      force_size per_live_local
+##    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;                &lt;int&gt;          &lt;dbl&gt;
+##  1 Phoenix          29 Male   White                 4475          0.312
+##  2 Houston          NA Male   Hispanic/Latino       7700          0.292
+##  3 Indianapolis     23 Male   White                 1620          0.648
+##  4 Atlanta          25 Female Black                 2950          0.137
+##  5 San Francisco    24 Female White                 3020          0.316
+##  6 San Francisco    57 Male   Black                 3020          0.316
+##  7 San Francisco    21 Male   Hispanic/Latino       3020          0.316
+##  8 Los Angeles      32 Male   Hispanic/Latino      10100          0.228
+##  9 Atlanta          62 Male   Black                 2950          0.137
+## 10 Washington       35 Male   Black                 9340          0.116
+## # … with 51 more rows</code></pre>
+<pre class="r"><code># Use mutate to generate a variable that is a function of at least one other variable
+# --&gt; I use mutate to generate the police size (pol_Live_local) in the city and round the per_live_local
+#    and pol_Live_local.
+LeftJoin &lt;- LeftJoin %&gt;% mutate(pol_Live_local = force_size * per_live_local) %&gt;%
+  mutate_at(vars(per_live_local), funs(round(.,3))) %&gt;% mutate_at(vars(pol_Live_local), funs(round(.,0)))</code></pre>
+<pre><code>## Warning: funs() is soft deprecated as of dplyr 0.8.0
+## Please use a list of either functions or lambdas: 
+## 
+##   # Simple named list: 
+##   list(mean = mean, median = median)
+## 
+##   # Auto named with `tibble::lst()`: 
+##   tibble::lst(mean, median)
+## 
+##   # Using lambdas
+##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+## This warning is displayed once per session.</code></pre>
+<pre class="r"><code>LeftJoin</code></pre>
+<pre><code>## # A tibble: 61 x 7
+##    city      age gender killedRace force_size per_live_local pol_Live_local
+##    &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;           &lt;int&gt;          &lt;dbl&gt;          &lt;dbl&gt;
+##  1 Phoenix    29 Male   White            4475          0.312           1395
+##  2 Houston    NA Male   Hispanic/…       7700          0.292           2250
+##  3 Indian…    23 Male   White            1620          0.648           1050
+##  4 Atlanta    25 Female Black            2950          0.137            405
+##  5 San Fr…    24 Female White            3020          0.316            955
+##  6 San Fr…    57 Male   Black            3020          0.316            955
+##  7 San Fr…    21 Male   Hispanic/…       3020          0.316            955
+##  8 Los An…    32 Male   Hispanic/…      10100          0.228           2305
+##  9 Atlanta    62 Male   Black            2950          0.137            405
+## 10 Washin…    35 Male   Black            9340          0.116           1080
+## # … with 51 more rows</code></pre>
+<pre class="r"><code># Compute at least 10 different summary statistics using 
+# summarize and summarize with group_by 
+# At least 2 of these should group by a categorical variable
+
+# 1.--&gt; mean age was calculated and group by city.
+LeftJoin%&gt;% group_by(city)%&gt;% summarise(meanAgeKilled = mean(age)) %&gt;% arrange(meanAgeKilled)</code></pre>
+<pre><code>## # A tibble: 22 x 2
+##    city          meanAgeKilled
+##    &lt;chr&gt;                 &lt;dbl&gt;
+##  1 Denver                 17  
+##  2 Chicago                18  
+##  3 Detroit                22.5
+##  4 Baltimore              25.5
+##  5 New Orleans            29.5
+##  6 San Francisco          33.5
+##  7 Phoenix                34.2
+##  8 Indianapolis           34.2
+##  9 Washington             35  
+## 10 Los Angeles            35.6
+## # … with 12 more rows</code></pre>
+<pre class="r"><code># 2.--&gt; I summarise the people that were killed in 2015 by police and group by gender.
+LeftJoin%&gt;% group_by(gender)%&gt;% summarise(n=n())</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   gender     n
+##   &lt;chr&gt;  &lt;int&gt;
+## 1 Female     3
+## 2 Male      58</code></pre>
+<pre class="r"><code># 3. --&gt; I also summarise the people were killed in 2015 by police and group by race.
+LeftJoin %&gt;% group_by(killedRace) %&gt;% summarise(n=n())</code></pre>
+<pre><code>## # A tibble: 5 x 2
+##   killedRace                 n
+##   &lt;chr&gt;                  &lt;int&gt;
+## 1 Asian/Pacific Islander     2
+## 2 Black                     27
+## 3 Hispanic/Latino           16
+## 4 Native American            1
+## 5 White                     15</code></pre>
+<pre class="r"><code># 4. --&gt; I summarise the number of cases in each city and group by city, force size and the number of police that live in that city.
+LeftJoin %&gt;% group_by(city, force_size, pol_Live_local) %&gt;% summarise(case=n()) %&gt;%
+  arrange(desc(case))</code></pre>
+<pre><code>## # A tibble: 22 x 4
+## # Groups:   city, force_size [22]
+##    city          force_size pol_Live_local  case
+##    &lt;chr&gt;              &lt;int&gt;          &lt;dbl&gt; &lt;int&gt;
+##  1 Los Angeles        10100           2305     9
+##  2 Houston             7700           2250     6
+##  3 Phoenix             4475           1395     6
+##  4 Indianapolis        1620           1050     4
+##  5 New York           32300          19960     4
+##  6 San Francisco       3020            955     4
+##  7 Atlanta             2950            405     3
+##  8 San Antonio         2955           1845     3
+##  9 Baltimore           2800            720     2
+## 10 Cleveland           2045           1140     2
+## # … with 12 more rows</code></pre>
+<pre class="r"><code># 5. --&gt; I calculate the mean of the police force size in this 22 cities
+LeftJoin %&gt;% distinct(city,force_size) %&gt;%
+  summarise(mean_force_size=mean(force_size, na.rm=T),n_cities=n_distinct(city))</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   mean_force_size n_cities
+##             &lt;dbl&gt;    &lt;int&gt;
+## 1           5233.       22</code></pre>
+<pre class="r"><code># 6. --&gt; create a correlation matrix with cor() on your numeric variables
+LeftJoin %&gt;% group_by(per_live_local, force_size) %&gt;% summarise(killingCase=n()) %&gt;% cor()</code></pre>
+<pre><code>##                per_live_local force_size killingCase
+## per_live_local      1.0000000  0.2185134  -0.1614243
+## force_size          0.2185134  1.0000000   0.2748406
+## killingCase        -0.1614243  0.2748406   1.0000000</code></pre>
+<p><em>I drop the rows which have NA in the per_love_local variable. This can simplfy the merged dataset (LeftJoin) but might also drop some observation. I also unselect the variable “state” becuase the per_live_local is the variable that the percentage of police in the city, not state. </em>
+<em>I use mutate to generate the police size (pol_Live_local) in the city and round the per_live_local and pol_Live_local.</em>
+<em>Mean age was calculated and group by city. I also summarise the people that were killed in 2015 by police and group by gender.Another grouping is based on race. I summarise the number of cases in each city and group by city, force size and the number of police that live in that city. I summarise the number of cases in each city and group by city, force size and the number of police that live in that city so that I can obersve the relationship between the police size and number of case in the city.</em>
+<em>I calculate the mean of the police force size in this 22 cities. Finally, I create a correlation matrix</em></p>
+<pre class="r"><code>CaseNumber&lt;-LeftJoin %&gt;% group_by(city, force_size, pol_Live_local,per_live_local) %&gt;% summarise(case=n()) %&gt;%
+  arrange(desc(case))
+CaseNumber</code></pre>
+<pre><code>## # A tibble: 22 x 5
+## # Groups:   city, force_size, pol_Live_local [22]
+##    city          force_size pol_Live_local per_live_local  case
+##    &lt;chr&gt;              &lt;int&gt;          &lt;dbl&gt;          &lt;dbl&gt; &lt;int&gt;
+##  1 Los Angeles        10100           2305          0.228     9
+##  2 Houston             7700           2250          0.292     6
+##  3 Phoenix             4475           1395          0.312     6
+##  4 Indianapolis        1620           1050          0.648     4
+##  5 New York           32300          19960          0.618     4
+##  6 San Francisco       3020            955          0.316     4
+##  7 Atlanta             2950            405          0.137     3
+##  8 San Antonio         2955           1845          0.624     3
+##  9 Baltimore           2800            720          0.257     2
+## 10 Cleveland           2045           1140          0.557     2
+## # … with 12 more rows</code></pre>
+<pre class="r"><code>Forplot &lt;-CaseNumber %&gt;% select(city,force_size,case) </code></pre>
+<pre><code>## Adding missing grouping variables: `pol_Live_local`</code></pre>
+<pre class="r"><code>Forplot</code></pre>
+<pre><code>## # A tibble: 22 x 4
+## # Groups:   city, force_size, pol_Live_local [22]
+##    pol_Live_local city          force_size  case
+##             &lt;dbl&gt; &lt;chr&gt;              &lt;int&gt; &lt;int&gt;
+##  1           2305 Los Angeles        10100     9
+##  2           2250 Houston             7700     6
+##  3           1395 Phoenix             4475     6
+##  4           1050 Indianapolis        1620     4
+##  5          19960 New York           32300     4
+##  6            955 San Francisco       3020     4
+##  7            405 Atlanta             2950     3
+##  8           1845 San Antonio         2955     3
+##  9            720 Baltimore           2800     2
+## 10           1140 Cleveland           2045     2
+## # … with 12 more rows</code></pre>
+<pre class="r"><code>plot1 &lt;-ggplot(Forplot, aes(x = case,y = force_size, fill = city)) + geom_histogram(stat = &quot;summary&quot;,)+
+  scale_x_continuous(breaks = seq(0,10,by=1)) + 
+  labs(title = &quot;Fatal Interaction Cases vs. Police Force Size&quot;, x = &quot;Number of Police Killing Case&quot;, y = &quot;Police Force Size&quot;)</code></pre>
+<pre><code>## Warning: Ignoring unknown parameters: binwidth, bins, pad</code></pre>
+<pre class="r"><code> plot1</code></pre>
+<pre><code>## No summary function supplied, defaulting to `mean_se()</code></pre>
+<p><img src="/blog/Project1_files/figure-html/Visualizing-1.png" width="672" /></p>
+<pre class="r"><code>Forplot2&lt;- Forplot %&gt;% mutate(pol_live_local_inHundred = round((pol_Live_local / 100),0))
+
+plot2 &lt;-ggplot(Forplot2,aes(pol_live_local_inHundred, case, color=city)) +geom_point(stat = &quot;summary&quot;,size=2,shape=13) +
+  scale_y_continuous(breaks = seq(0,10,by=1)) +
+  scale_x_continuous(breaks = seq(0,300,by=30))+
+  labs(title = &quot;Ploices Live in Local (in hundred) vs. Fatal Interaction Cases&quot;, x = &quot;Number of Police Live in City They Serve&quot;, y = &quot;Number of Police Killing Case&quot;)
+
+plot2</code></pre>
+<pre><code>## No summary function supplied, defaulting to `mean_se()</code></pre>
+<p><img src="/blog/Project1_files/figure-html/Visualizing-2.png" width="672" />
+<em>I create another dataset called CaseNumber. This dataset includes the case happened in each city. The CaseNumber dataset will be modified to two dataset, Forplot and Forplot2 to gerenate the plots. Plot1 is the histogram of Fatal Interaction Cases vs. Police Force Size. the x axis is Number of Police killing case, the y axis is police force size. The bars are colored based on different cities.</em>
+<em>For plot2 is the scatter plot of Ploices Live in Local (in hundred) vs. Fatal Interaction Cases. x axis is the nuber of police live in city they serve and the y axis is the numbr of police killing case. Based on this plot we can see clearly that the number of plice live in the city is not positive correlation with the number of police killing case.</em></p>
+<pre class="r"><code>library(cluster)</code></pre>
+<pre><code>## Warning: package &#39;cluster&#39; was built under R version 3.5.2</code></pre>
+<pre class="r"><code>Project_clust_data &lt;- CaseNumber%&gt;%ungroup() %&gt;% select(-city)%&gt;%dplyr::select(force_size, pol_Live_local,case)
+Project_clust_data </code></pre>
+<pre><code>## # A tibble: 22 x 3
+##    force_size pol_Live_local  case
+##         &lt;int&gt;          &lt;dbl&gt; &lt;int&gt;
+##  1      10100           2305     9
+##  2       7700           2250     6
+##  3       4475           1395     6
+##  4       1620           1050     4
+##  5      32300          19960     4
+##  6       3020            955     4
+##  7       2950            405     3
+##  8       2955           1845     3
+##  9       2800            720     2
+## 10       2045           1140     2
+## # … with 12 more rows</code></pre>
+<pre class="r"><code>wss1&lt;-vector()
+for(i in 1:10){
+  temp1&lt;- Project_clust_data  %&gt;% dplyr::select(force_size, pol_Live_local,case) %&gt;% kmeans(.,i)
+  temp1
+  wss1[i] &lt;-temp1$tot.withinss
+}
+ggplot()+geom_point(aes(x=1:10,y=wss1))+geom_path(aes(x=1:10,y=wss1))+
+  xlab(&quot;clusters&quot;)+scale_x_continuous(breaks=1:10)</code></pre>
+<p><img src="/blog/Project1_files/figure-html/Dimensionality%20Reduction-1.png" width="672" /></p>
+<pre class="r"><code>Project_kmeans1 &lt;- Project_clust_data  %&gt;% kmeans(3)
+Project_kmeans1</code></pre>
+<pre><code>## K-means clustering with 3 clusters of sizes 17, 1, 4
+## 
+## Cluster means:
+##   force_size pol_Live_local     case
+## 1   2563.235       936.4706 2.352941
+## 2  32300.000     19960.0000 4.000000
+## 3   9815.000      4060.0000 4.250000
+## 
+## Clustering vector:
+##  [1] 3 3 1 1 2 1 1 1 1 1 1 1 1 1 1 1 3 1 1 1 1 3
+## 
+## Within cluster sum of squares by cluster:
+## [1] 20766663        0 68166697
+##  (between_SS / total_SS =  93.6 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;    
+## [5] &quot;tot.withinss&quot; &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;        
+## [9] &quot;ifault&quot;</code></pre>
+<pre class="r"><code>Project_kmeans_clust&lt;-Project_clust_data%&gt;%mutate(cluster=as.factor(Project_kmeans1$cluster))
+Project_kmeans_clust</code></pre>
+<pre><code>## # A tibble: 22 x 4
+##    force_size pol_Live_local  case cluster
+##         &lt;int&gt;          &lt;dbl&gt; &lt;int&gt; &lt;fct&gt;  
+##  1      10100           2305     9 3      
+##  2       7700           2250     6 3      
+##  3       4475           1395     6 1      
+##  4       1620           1050     4 1      
+##  5      32300          19960     4 2      
+##  6       3020            955     4 1      
+##  7       2950            405     3 1      
+##  8       2955           1845     3 1      
+##  9       2800            720     2 1      
+## 10       2045           1140     2 1      
+## # … with 12 more rows</code></pre>
+<pre class="r"><code>Project_kmeans_clust%&gt;%mutate(city = CaseNumber$city) %&gt;%ggplot(aes(case,pol_Live_local,color = city,shape=cluster))+geom_point(size = 3) +scale_x_continuous(breaks = seq(0,10,by=1)) +
+  labs(title = &quot;K-means 1&quot;, x = &quot;Police Killing Case&quot;, y = &quot;Polices Live in Local&quot;)</code></pre>
+<p><img src="/blog/Project1_files/figure-html/Dimensionality%20Reduction-2.png" width="672" /></p>
+<pre class="r"><code>Project_kmeans_clust%&gt;%mutate(city = CaseNumber$city) %&gt;%ggplot(aes(case,force_size,color = city,shape=cluster))+geom_point(size = 3) +scale_x_continuous(breaks = seq(0,10,by=1)) +
+  labs(title = &quot;K-means 2&quot;, x = &quot;Police Killing Case&quot;, y = &quot;Police Force Size&quot;)</code></pre>
+<p><img src="/blog/Project1_files/figure-html/Dimensionality%20Reduction-3.png" width="672" />
+<em>I choose to use k mean clustering for this project. I first use Silhouette width in k-means to determine the reasonalbe number if cluster. Based on the graph, I pick 3 clusters for my k-means. I pick three variable, force size, polices live in the local, and case for my cluster means. I then visualize the clusters in scatter plot using case as x axis and polices live in local as y axis. The different shapes represent different clusters and the colors of the points represent different cities. Another k-mean plot is case vs. force size. We can see that in both plots, cluster 1 is higher than others in Y axis. cluser 3 is higher than others in X axis. Cluster 2 generally lower than other in both axis.</em></p>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

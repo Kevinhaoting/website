@@ -1,0 +1,39 @@
+"0","knitr::opts_chunk$set(collapse = TRUE)"
+"2","Warning messages:
+"
+"2","1: "
+"2","In bookdown:::check_special_chars(files) :"
+"2","
+ "
+"2"," The filename ""content/Project 1.Rmd"" contains special characters. You may rename it to, e.g., ""content/Project-1.Rmd"".
+"
+"2","2: "
+"2","In bookdown:::check_special_chars(files) :"
+"2","
+ "
+"2"," The filename ""content/Project 1.Rmd"" contains special characters. You may rename it to, e.g., ""content/Project-1.Rmd"".
+"
+"2","3: "
+"2","In bookdown:::check_special_chars(files) :"
+"2","
+ "
+"2"," The filename ""content/Project 1.Rmd"" contains special characters. You may rename it to, e.g., ""content/Project-1.Rmd"".
+"
+"2","4: "
+"2","In bookdown:::check_special_chars(files) :"
+"2","
+ "
+"2"," The filename ""content/Project 1.Rmd"" contains special characters. You may rename it to, e.g., ""content/Project-1.Rmd"".
+"
+"2","5: "
+"2","In bookdown:::check_special_chars(files) :"
+"2","
+ "
+"2"," The filename ""content/blog/Project 1.Rmd"" contains special characters. You may rename it to, e.g., ""content/blog/Project-1.Rmd"".
+"
+"2","6: "
+"2","In bookdown:::check_special_chars(files) :"
+"2","
+ "
+"2"," The filename ""content/Project 1.Rmd"" contains special characters. You may rename it to, e.g., ""content/Project-1.Rmd"".
+"
