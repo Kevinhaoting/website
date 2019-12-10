@@ -1,0 +1,10 @@
+---
+title: SDS348 in UT
+author: HaoTing Huang
+date: '2019-12-10'
+slug: sds348-in-ut
+categories: []
+tags: []
+description: ''
+---
+This blog was created at December 10, 2019 to demostrate my ability of creating my own portfolio through R. I took SDS348 in UT with professor Woodward. I learned decent amount of knowledge regarding ggplot(), python and statistic analytic skills. The projects from this class were presented in Project tab

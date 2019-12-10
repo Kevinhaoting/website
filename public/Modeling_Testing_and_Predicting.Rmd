@@ -1,0 +1,290 @@
+---
+title: 'Project 2: Modeling, Testing, and Predicting'
+author: "SDS348 Fall 2019"
+date: ''
+output:
+  html_document:
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+```
+
+# Modeling
+```{r Instructions}
+# Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph.
+library(sandwich)
+library(fivethirtyeight)
+library(datasets)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(lmtest)
+
+head(police_killings)
+project2 <- police_killings %>% select(age, gender, month, day, raceethnicity) %>% filter(age != "NA") %>% filter(raceethnicity != "NA") %>% filter(raceethnicity != "Native American") %>% mutate(month_num = recode_factor(month, "January" = "1" , "February" = "2", "March" = "3","April" = "4", "May" = "5", "June" = "6", "July" = "7", "August" = "8", "September" = "9", "October" = "10", "November" = "11","December" = "12")) %>% mutate_if(is.factor, as.integer)
+
+head(project2)
+
+```
+*I use one of my original datasets from project 1 "police_killings" for project 2. This dataset is about the police killing incidents in 2015. I select 5 variables from the dataset to build the model.*
+
+# 1. MANOVA
+```{r 1. MANOVA}
+# Ho:For age and day, means of each gender are equal
+# Ha: For at least one DV, at least one gender mean is different
+projectMAN <-manova(cbind(age, day) ~gender, data = project2)
+summary(projectMAN)
+
+# The probability of at least one type I error would be
+1 - 0.95**7 # conduct 7 hypothesis test
+```
+*A one-way multivariate analysis of variance (MANOVA) was conducted to determine the effect of the gender (male, female) on two dependent variables (age, and day). There is no significant difference was found among the 2 gender (male and female) on the 2 dependent variable (age and day). p value is 0.3149. However, if my result had been significant, I would perform 1(MANOVA) + 2(ANOVA) + 2x2(t-test, 2 for each ANOVA) for a maximum total of 7 tests.The probability of at least one type I error would be 0.3016627. There are several assumptions for MANOVA, such as Random samples, independent observations, No extreme univariate or multivariate outliers, No multicollinearity..etc. The dataset has lots of oversvation and  meet the "Random samples", "independent observations", however, the dataset is failed to satisfiy the assumption "Linear relationships among DVs" and "Multivariate normality of DVs".*
+
+#2. Randomization Test
+```{r 2. randomization test}
+library(vegan)
+head(project2)
+#Randomization test
+# Ho: mean age of dead is the same for male vs. female
+# Ha: mean age of dead is different for male vs.female
+
+project2 %>% group_by(gender) %>% summarise(means = mean(age), ) %>% summarise(mean_diff = diff(means))
+# mean_ diff 1.34108		
+
+project2_rand_dist <-vector()
+for(i in 1:5000){
+  new <-data.frame(age = sample(project2$age), gender = project2$gender)
+  project2_rand_dist[i] <- mean(new[new$gender == "Male",]$age)-
+    mean(new[new$gender == "Female",]$age)
+}
+
+{hist(project2_rand_dist, main = "", ylab = ""); abline(v = 1.34108	, col = "red")}
+
+
+mean(project2_rand_dist > 1.34108	)*2 # p-value
+
+
+```
+*I performe the randomization test on my data to see whether there was a difference in mean age of dead. my null hypothesis is Ho: mean age of dead is the same for male vs. female and my alternative hypothesis is Ha: mean age of dead is different for male vs.female. The plot of null distribution was generated and the p value was 0.6496. Based on the result and p value, there was no significant difference in mean age of dead for male vs. female.*
+
+# 3. Linear Regression Model
+```{r 3. linear regression model}
+head(project2)
+project2$age_c <- project2$age - mean(project2$age)
+project2$day_c <- project2$day - mean(project2$day)
+project2$month_num_c <- project2$month_num - mean(project2$month_num)
+project2%>% group_by(raceethnicity) %>% summarise()
+project2fit <- lm(age ~ gender * month_num_c, data = project2)
+summary(project2fit)
+head(project2)
+
+
+# Age = 36.9440 - 0.3551(Male) -0.3686 (month_num_c) +0.4325(genderMale:month_num_c)
+
+lmplot <-project2 %>% select(age, gender, month_num_c)
+
+ggplot(lmplot, aes(x = age, y = month_num_c, color = gender)) +
+ geom_point(size = 4) + geom_smooth(method = "lm")
+
+# check  linearity and homoskedasticity 
+project2resids <- project2fit$residuals
+project2fitvals <- project2fit$fitted.values
+ggplot()+ geom_point(aes(project2fitvals,project2resids)) + geom_hline(yintercept = 0, color="red")
+
+# check normality
+ggplot()+ geom_histogram(aes(project2resids, bins = 20))
+
+ggplot()+geom_qq(aes(sample=project2resids))+geom_qq_line(aes(sample=project2resids))
+
+library(sandwich)
+# recompute regression results with robust standard errors via `coeftest(..., vcov=vcovHC(...))
+coeftest(project2fit)
+
+coeftest(project2fit,  vcov =  vcovHAC(project2fit))
+
+summary(project2fit)
+```
+*Based on the coefficent test of linear regression model, we can see the full model with gender x raceethnicity interaction and it effect on age. According to the coefficcient estiamtes. We can interpret the model like the following equation: Age = 37.0833 + 0.2072(Male) + 2.8333(month_num_c) - 2.8068(genderMale:month_num_c). I check the assumptions graphically. The graphs show that the dataset does not satisfy all the assumptions (linearity, normality, and homoskedasticity). The result of robust standard errors via `coeftest(..., vcov=vcovHC(...)) was computed. Comparing the normal theory SEs and robust SEs, all robust SEs are smaller than normal theory SEs The result of p value have chagned but the conclusion stay the same. 0.003656 proportion (Multiple R-squared) in the response variable explained by the overall model.*
+
+# 4. Compute Bootstrapped Standard Errors
+```{r 4. compute bootstrapped standard errors}
+library(sandwich)
+project2_resid_resamp <- replicate(5000,{
+  new_resid <- sample(project2resids, replace = TRUE)
+  newdat <- project2
+  newdat$new_y <- project2fitvals + new_resid
+  project2fitboost <- lm(new_y ~ gender * month_num_c, data = newdat)
+  coef(project2fitboost)
+})
+project2_resid_resamp%>%t%>%as.data.frame%>%summarize_all(sd) # boostrapped SEs
+
+coeftest(project2fit) # normal theory SEs
+coeftest(project2fit,  vcov =  vcovHAC(project2fit)) #Robsut SEs
+
+#3.011814	3.080563	2.387562	2.424464	
+```
+*Comparing the SEs from boostrapped, nomral theory, and robsut, boostrapped SEs are more similar to normal theory SEs. All the robust SEs are smaller than SEs from normal theory and boostrapped SEs.*
+
+
+# 5. Logistic Regression Predicting a Binary Categorical Variable
+```{r 5. logistic regression predicting a binary categorical variable}
+library(plotROC)
+head(project2)
+project2%>% group_by(month) %>% summarise()
+forlog <- project2 %>% mutate(y = ifelse(gender == "Male",1,0))
+head(forlog)
+logfit <- glm(y ~ age + month_num, data = forlog, family = "binomial")
+summary(logfit)
+coeftest(logfit)
+exp(coef(logfit))
+
+# confusion matrix
+project2_prob<-predict(logfit,type="response")
+project2_pred <- ifelse(project2_prob > 0.5,1,0)
+table(truth = forlog$y, prediction = project2_pred) %>% addmargins()
+
+# class_ diag
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  #CALCULATE EXACT AUC
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+# discuss the Accuracy, Sensitivity (TPR), Specificity (TNR)
+
+table(truth = forlog$y, prediction = project2_pred) %>% addmargins()
+class_diag(project2_prob,forlog$y)
+
+# log-odds density plot
+forlog$logit <-predict(logfit, type = "link")
+
+forlog%>%ggplot()+geom_density(aes(logit,color=gender,fill=gender), alpha=.4)+
+  theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab("predictor (logit)")
+
+# ROC curve
+project2_ROC <-ggplot(logfit) + geom_roc(aes(d = y, m = project2_prob), n.cuts = 0)
+project2_ROC
+
+calc_auc(project2_ROC)
+
+
+# 10-fold CV
+
+set.seed(1234)
+k=10
+
+data1<-forlog[sample(nrow(forlog)),]
+folds<-cut(seq(1:nrow(forlog)),breaks=k,labels=F)
+
+diags<-NULL
+for(i in 1:k){
+  train<-data1[folds!=i,]
+  test<-data1[folds==i,]
+  truth<-test$y
+  
+  fit1c<-glm(y ~ age + month_num,data=train,family="binomial")
+  probs1c<-predict(fit1c,newdata = test,type="response")
+  
+  diags<-rbind(diags,class_diag(probs1c,truth))
+}
+
+apply(diags,2,mean)
+
+
+```
+*I perform a logistic regression predicting my gender categorical variable (binary --> Male(1) vs Female(0)) from age and month. We can interpret coefficient estimates as follow: The predicted odds of gender is 8.287190 when age = month = 0. Holding the age constant, going up 1 age mutiplies odds by 1.008004. Holding the month_num constant, going up 1 month mutiplies odds by 1.261402. We can see the model as this equation: Odds = 8.287190 x  1.008004^age x 1.261402^month_num.*
+
+*The confustion matrix table is generated and I compare its result with the self-define function,class_diag(). Two results are mathced. Accuracy = 0.955157, Sensitivity (TPR) = 1, Specificity (TNR) = 0, Recall (PPV) = 0.955157.*
+
+*The density of log-odds plot is generated. The results of female and male are bascially matched.*
+
+*The ROC curve and AUC are generated. Based on the ROC and AUC (0.5929577), the prediction is not great. It's hard to predict the gender from just age and month.*
+
+*The 10-fold CV is performed and the average out-of-sample Accuracy = 0.9550505, Sensitivity = 1, Specificity = 0, Recall(pvv) = 0.9550505, AUC = 0.5438668.*
+
+
+# 6. Choose one variable you want to predict
+```{r 6. Choose one variable you want to predict}
+library(glmnet)
+head(forlog)
+ymatrix <- as.matrix(forlog$y)
+xmatrix <- forlog %>% dplyr::select(age,month_num) %>% scale%>%as.matrix()
+cv6 <-cv.glmnet(xmatrix,ymatrix, family = "binomial")
+lasso6 <-glmnet(xmatrix,ymatrix, family = "binomial", lambda = cv6$lambda.1se)
+coef(lasso6)
+
+
+# 10-fold CV
+set.seed(1234) 
+k=10
+data6<-forlog[sample(nrow(forlog)),]
+folds6<-cut(seq(1:nrow(forlog)),breaks=k,labels=F)
+diags6<-NULL 
+for(i in 1:k){
+  train6<-data6[folds!=i,] 
+  test6<-data6[folds==i,] 
+  truth6<-test6$y
+  
+  fit6<-glm(y~age,data=train6,family="binomial") 
+  probs6<-predict(fit6,newdata = test6,type="response")
+  preds6<-ifelse(probs6>.5,1,0)
+  diags6<-rbind(diags6,class_diag(probs6,truth6)) 
+}
+
+diags6%>%summarize_all(mean)
+apply(diags,2,mean)
+
+
+
+```
+*According to the Lasso regression, age is the retained predictor of gender.*
+
+*10-fold CV using Lasso regression model. Comparing the Lasso regression 10-fold CV with the CV from part 5, acc, sens, spec, and ppv remain the same. However, AUC is lower to 0.4983759 in Lasso regression 10-fold. The model from part 5 actually more fit than the Lasso regression model.*
+
+
+
+
+
+

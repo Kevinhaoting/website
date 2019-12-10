@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="HaoTing Huang" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>HW 8</title>
+    <meta name="generator" content="Hugo 0.60.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/hw8/">HW 8</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="haoting-huang-hh25923" class="section level2">
+<h2>HaoTing Huang hh25923</h2>
+<p><strong>This homework is due on Nov 10, 2019 at 11:59pm. Please submit as a pdf file on Canvas.</strong></p>
+<p><em>For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.</em></p>
+<blockquote>
+<h3 id="how-to-submit-this-assignment">How to submit this assignment</h3>
+<p>All homework assignments will be completed using R Markdown. These <code>.Rmd</code> files consist of text/syntax (formatted using Markdown) alongside embedded R code.
+When you have completed the assignment (by adding R code inside codeblocks and supporting text outside of the codeblocks), create your document as follows:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>Click the “Knit” button (above) to create an .html file</li>
+<li>Open the html file in your internet browser to view</li>
+<li>Go to <code>File &gt; Print</code> and print your .html file to a .pdf</li>
+<li>(or knit to PDF)</li>
+<li>Upload the .pdf file to Canvas</li>
+</ul>
+</blockquote>
+<hr />
+<div id="question-1" class="section level3">
+<h3>Question 1</h3>
+<p>We will analyze some data from a famous case of alleged gender discrimination in admission to graduate programs at UC Berkeley in 1973. The three variables are <code>Admit</code> (Admitted, Rejected), <code>Gender</code> (Male, Female), and <code>Dept</code> (Departments A, B, C, D, E, F). First, create a dichotomous outcome variable <span class="math inline">\(y\)</span> that is 1 if Admit==“Admitted”, 0 otherwise.</p>
+<p>1a. (2 pts) Predict <span class="math inline">\(y\)</span> from Gender using a logistic regression. Is the effect significant? Interpret the effect: what is the odds ratio for admission to graduate school for women compared to men? Compute the predicted probability of admission for women and for men.</p>
+<pre class="r"><code>library(dplyr)
+# library(MASS)
+library(ggplot2)
+library(lmtest)
+library(tidyverse)
+adm&lt;-read.csv(&quot;http://www.nathanielwoodward.com/admissions.csv&quot;)
+head(adm)</code></pre>
+<pre><code>##     X    Admit Gender Dept
+## 1 1.0 Admitted   Male    A
+## 2 1.1 Admitted   Male    A
+## 3 1.2 Admitted   Male    A
+## 4 1.3 Admitted   Male    A
+## 5 1.4 Admitted   Male    A
+## 6 1.5 Admitted   Male    A</code></pre>
+<pre class="r"><code>dichotomous &lt;- adm %&gt;% select(-X) %&gt;% mutate(y = ifelse(Admit==&quot;Admitted&quot;,1,0))
+head(dichotomous)</code></pre>
+<pre><code>##      Admit Gender Dept y
+## 1 Admitted   Male    A 1
+## 2 Admitted   Male    A 1
+## 3 Admitted   Male    A 1
+## 4 Admitted   Male    A 1
+## 5 Admitted   Male    A 1
+## 6 Admitted   Male    A 1</code></pre>
+<pre class="r"><code>#adm %&gt;% select(Dept) %&gt;% summary()
+LRQ1 &lt;- glm(y~Gender, data = dichotomous, family = binomial(link = &quot;logit&quot;))
+
+summary(LRQ1)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ Gender, family = binomial(link = &quot;logit&quot;), 
+##     data = dichotomous)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.0855  -1.0855  -0.8506   1.2722   1.5442  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept) -0.83049    0.05077 -16.357   &lt;2e-16 ***
+## GenderMale   0.61035    0.06389   9.553   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 6044.3  on 4525  degrees of freedom
+## Residual deviance: 5950.9  on 4524  degrees of freedom
+## AIC: 5954.9
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>coeftest(LRQ1)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##              Estimate Std. Error  z value  Pr(&gt;|z|)    
+## (Intercept) -0.830486   0.050772 -16.3572 &lt; 2.2e-16 ***
+## GenderMale   0.610352   0.063893   9.5527 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(LRQ1))</code></pre>
+<pre><code>## (Intercept)  GenderMale 
+##   0.4358372   1.8410800</code></pre>
+<pre class="r"><code>table(dichotomous$y, dichotomous$Gender)</code></pre>
+<pre><code>##    
+##     Female Male
+##   0   1278 1493
+##   1    557 1198</code></pre>
+<pre class="r"><code> (557/( 557+1278))/(1278/(557+1278)) # Female Odd</code></pre>
+<pre><code>## [1] 0.4358372</code></pre>
+<pre class="r"><code>(1198/(1198+1493))/(1493/(1493+1198)) # Male Odd</code></pre>
+<pre><code>## [1] 0.8024113</code></pre>
+<pre class="r"><code>0.8024113/0.4358372</code></pre>
+<pre><code>## [1] 1.84108</code></pre>
+<pre class="r"><code>predict(LRQ1,newdata = data.frame(Gender = &quot;Male&quot;), type = &quot;response&quot;)</code></pre>
+<pre><code>##         1 
+## 0.4451877</code></pre>
+<pre class="r"><code>predict(LRQ1,newdata = data.frame(Gender = &quot;Female&quot;), type = &quot;response&quot;)</code></pre>
+<pre><code>##         1 
+## 0.3035422</code></pre>
+<p><em>The effect is significant. Odds of admission for Male are 1.841 times than Female. The predicted probability of admission for women is 30.4%. the predicted probability of admission for men is 44.5%.</em></p>
+<p>1b. (2 pts) Now predict <span class="math inline">\(y\)</span> (admission) from Dept using a logistic regression. Interpret the overall pattern of results. For which departments are odds of admission higher than A? Which departments are the most selective? The least?</p>
+<pre class="r"><code>LRQ1b &lt;- glm(y~Dept, data = dichotomous, family = binomial(link = &quot;logit&quot;))
+#summary(LRQ1b)
+coef(LRQ1b)</code></pre>
+<pre><code>## (Intercept)       DeptB       DeptC       DeptD       DeptE       DeptF 
+##  0.59345997 -0.05059499 -1.20914909 -1.25833005 -1.68296057 -3.26910674</code></pre>
+<pre class="r"><code>exp(coef(LRQ1b))</code></pre>
+<pre><code>## (Intercept)       DeptB       DeptC       DeptD       DeptE       DeptF 
+##  1.81024096  0.95066362  0.29845113  0.28412811  0.18582302  0.03804039</code></pre>
+<pre class="r"><code>#(dichotomous$y, dichotomous$Dept)
+
+predict(LRQ1b, newdata = data.frame(Dept = &quot;A&quot;), type = &quot;response&quot;) # A</code></pre>
+<pre><code>##         1 
+## 0.6441586</code></pre>
+<pre class="r"><code>predict(LRQ1b, newdata = data.frame(Dept = &quot;B&quot;), type = &quot;response&quot;) # B</code></pre>
+<pre><code>##         1 
+## 0.6324786</code></pre>
+<pre class="r"><code>predict(LRQ1b, newdata = data.frame(Dept = &quot;C&quot;), type = &quot;response&quot;) # C</code></pre>
+<pre><code>##         1 
+## 0.3507625</code></pre>
+<pre class="r"><code>predict(LRQ1b, newdata = data.frame(Dept = &quot;D&quot;), type = &quot;response&quot;) # D</code></pre>
+<pre><code>##         1 
+## 0.3396465</code></pre>
+<pre class="r"><code>predict(LRQ1b, newdata = data.frame(Dept = &quot;E&quot;), type = &quot;response&quot;) # E</code></pre>
+<pre><code>##         1 
+## 0.2517123</code></pre>
+<pre class="r"><code>predict(LRQ1b, newdata = data.frame(Dept = &quot;F&quot;), type = &quot;response&quot;) # F</code></pre>
+<pre><code>##          1 
+## 0.06442577</code></pre>
+<p><em>No departments’ odds are higher than A. Dept F is the most selective and the Dept A is the least selective. Student’s getting more difficult to being select from Dept A to Dept F.</em></p>
+<p>1c. (2 pts) Now rerun the model but add <code>Dept</code> (Department of graduate program) as a predictor. Interpret the coefficient for <code>Gender</code> now (note there is no interaction, so the effect doesn’t depend on the level of <code>Dept</code>). Controlling for Department, is there a significant effect of Gender on admissions? What is the odds ratio? What can you say about departments A and B compared to the others (in terms of odds/probability of admission; relevel if need be)?</p>
+<pre class="r"><code>fit1c &lt;-glm(y~Gender+Dept, data = dichotomous, family = &quot;binomial&quot;)
+#summary(fit1c)
+coeftest(fit1c)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##              Estimate Std. Error  z value  Pr(&gt;|z|)    
+## (Intercept)  0.681921   0.099113   6.8803 5.974e-12 ***
+## GenderMale  -0.099870   0.080846  -1.2353    0.2167    
+## DeptB       -0.043398   0.109839  -0.3951    0.6928    
+## DeptC       -1.262598   0.106633 -11.8406 &lt; 2.2e-16 ***
+## DeptD       -1.294606   0.105823 -12.2336 &lt; 2.2e-16 ***
+## DeptE       -1.739306   0.126113 -13.7916 &lt; 2.2e-16 ***
+## DeptF       -3.306480   0.169981 -19.4520 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(fit1c))</code></pre>
+<pre><code>## (Intercept)  GenderMale       DeptB       DeptC       DeptD       DeptE 
+##  1.97767415  0.90495497  0.95753028  0.28291804  0.27400567  0.17564230 
+##       DeptF 
+##  0.03664494</code></pre>
+<p><em>Controlling for Department, there is no longer a significant effect of Gender on admissions (p = 0.2167). The odds ratio is 0.90. When controlling the gender, the odds of Dept A and B are way more higher than other Depts. and the odds of Dept A and Dept B are not significant different.</em></p>
+<p>1d. (2 pts) OK, now add the interaction of Gender and Department as you predict <span class="math inline">\(y\)</span> (admissions), to get a fuller picture. Compute the odds ratio for admission (Male vs. Female) in each department (A through F). Which departments favor Male applicants (i.e., higher odds of admission for Males)?</p>
+<pre class="r"><code>fit1d &lt;-glm(y~Gender+Dept+Gender*Dept, data = dichotomous, family = &quot;binomial&quot;)
+summary(fit1d)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ Gender + Dept + Gender * Dept, family = &quot;binomial&quot;, 
+##     data = dichotomous)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.8642  -0.9127  -0.3821   0.9768   2.3793  
+## 
+## Coefficients:
+##                  Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)        1.5442     0.2527   6.110 9.94e-10 ***
+## GenderMale        -1.0521     0.2627  -4.005 6.21e-05 ***
+## DeptB             -0.7904     0.4977  -1.588  0.11224    
+## DeptC             -2.2046     0.2672  -8.252  &lt; 2e-16 ***
+## DeptD             -2.1662     0.2750  -7.878 3.32e-15 ***
+## DeptE             -2.7013     0.2790  -9.682  &lt; 2e-16 ***
+## DeptF             -4.1250     0.3297 -12.512  &lt; 2e-16 ***
+## GenderMale:DeptB   0.8321     0.5104   1.630  0.10306    
+## GenderMale:DeptC   1.1770     0.2996   3.929 8.53e-05 ***
+## GenderMale:DeptD   0.9701     0.3026   3.206  0.00135 ** 
+## GenderMale:DeptE   1.2523     0.3303   3.791  0.00015 ***
+## GenderMale:DeptF   0.8632     0.4027   2.144  0.03206 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 6044.3  on 4525  degrees of freedom
+## Residual deviance: 5167.3  on 4514  degrees of freedom
+## AIC: 5191.3
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>exp(coef(fit1d))</code></pre>
+<pre><code>##      (Intercept)       GenderMale            DeptB            DeptC 
+##       4.68421053       0.34921205       0.45365169       0.11029053 
+##            DeptD            DeptE            DeptF GenderMale:DeptB 
+##       0.11461595       0.06711510       0.01616276       2.29803272 
+## GenderMale:DeptC GenderMale:DeptD GenderMale:DeptE GenderMale:DeptF 
+##       3.24461787       2.63817862       3.49825046       2.37068781</code></pre>
+<p><em>The odds ratio for GenderMale:DeptB is 2.298 times that of GenderMale:DeptA, GenderMale:DeptC is 3.24 times that of GenderMale:DeptA, GenderMale:DeptD is 2.638 times that of GenderMale:DeptA, GenderMale:DeptE is 3.498 times that of GenderMale:DeptA, GenderMale:DeptF is 2.371 times that of GenderMale:DeptA.</em>
+<em>All the departments except A favor Male applicants.</em></p>
+<p>1e. (2 pts) Take the admit dataset and, using dplyr functions, create a table with counts of applicants of each Gender in each Department (e.g., number of males who applied to department A) and also the percent of applicants admitted of each Gender in each Department. Sort descending by the count variable. In terms of selectivity, what kinds of departments did the majority of women apply to? What about the majority of men? Skim through the wikipedia article about Simpson’s paradox (<a href="https://en.wikipedia.org/wiki/Simpsons_paradox" class="uri">https://en.wikipedia.org/wiki/Simpsons_paradox</a>) to get a better idea of what is going on here!</p>
+<pre class="r"><code>adm %&gt;% select(Dept,Gender) %&gt;% group_by(Dept,Gender)%&gt;% summarise(count= n())</code></pre>
+<pre><code>## # A tibble: 12 x 3
+## # Groups:   Dept [6]
+##    Dept  Gender count
+##    &lt;fct&gt; &lt;fct&gt;  &lt;int&gt;
+##  1 A     Female   108
+##  2 A     Male     825
+##  3 B     Female    25
+##  4 B     Male     560
+##  5 C     Female   593
+##  6 C     Male     325
+##  7 D     Female   375
+##  8 D     Male     417
+##  9 E     Female   393
+## 10 E     Male     191
+## 11 F     Female   341
+## 12 F     Male     373</code></pre>
+<pre class="r"><code># table1e$percent &lt;- adm 
+adm %&gt;% select(Dept,Gender) %&gt;% group_by(Dept,) %&gt;% count(Gender) %&gt;% mutate(total = sum(n))%&gt;% group_by(Gender) %&gt;% mutate(per=paste0(round(100*n/total,2),&#39;%&#39;)) %&gt;% arrange(desc(n))</code></pre>
+<pre><code>## # A tibble: 12 x 5
+## # Groups:   Gender [2]
+##    Dept  Gender     n total per   
+##    &lt;fct&gt; &lt;fct&gt;  &lt;int&gt; &lt;int&gt; &lt;chr&gt; 
+##  1 A     Male     825   933 88.42%
+##  2 C     Female   593   918 64.6% 
+##  3 B     Male     560   585 95.73%
+##  4 D     Male     417   792 52.65%
+##  5 E     Female   393   584 67.29%
+##  6 D     Female   375   792 47.35%
+##  7 F     Male     373   714 52.24%
+##  8 F     Female   341   714 47.76%
+##  9 C     Male     325   918 35.4% 
+## 10 E     Male     191   584 32.71%
+## 11 A     Female   108   933 11.58%
+## 12 B     Female    25   585 4.27%</code></pre>
+<p><em>the majority of women applied to C,D,E, and F and in terms of selective, C,D,E and F were more selective than A,B, which were the department that most men applied to.</em></p>
+</div>
+</div>
+<div id="question-2" class="section level2">
+<h2>Question 2</h2>
+<p>Load the starswars data (from the dplyr package). Remove all NAs from the variables <code>mass</code>, <code>height</code>, and <code>species</code>. Create a binary numeric variable <span class="math inline">\(y\)</span>: 1 if species is Human, 0 otherwise. Use this modified dataset for the remaining questions.</p>
+<p>2a (3 pts) Predict the dichotomous Human indicator (<code>y</code>) from <code>height</code> using a logistic regression. Briefly interpret. Plot the ROC curve and compute the AUC. Create a plot of the logistic regression showing predicted probability of being Human by height. Color points by predicted human vs predicted not.</p>
+<pre class="r"><code>data(starwars)
+library(plotROC)
+starwarsWithoutNA &lt;-starwars %&gt;%drop_na(mass, height, species) %&gt;% mutate(y= ifelse(species == &quot;Human&quot;, 1, 0))
+
+head(starwarsWithoutNA)</code></pre>
+<pre><code>## # A tibble: 6 x 14
+##   name  height  mass hair_color skin_color eye_color birth_year gender
+##   &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; 
+## 1 Luke…    172    77 blond      fair       blue            19   male  
+## 2 C-3PO    167    75 &lt;NA&gt;       gold       yellow         112   &lt;NA&gt;  
+## 3 R2-D2     96    32 &lt;NA&gt;       white, bl… red             33   &lt;NA&gt;  
+## 4 Dart…    202   136 none       white      yellow          41.9 male  
+## 5 Leia…    150    49 brown      light      brown           19   female
+## 6 Owen…    178   120 brown, gr… light      blue            52   male  
+## # … with 6 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;, films &lt;list&gt;,
+## #   vehicles &lt;list&gt;, starships &lt;list&gt;, y &lt;dbl&gt;</code></pre>
+<pre class="r"><code>fit2a &lt;-glm(y ~ height, data = starwarsWithoutNA, family = binomial)
+coef(fit2a)</code></pre>
+<pre><code>##  (Intercept)       height 
+## -1.836225483  0.007664912</code></pre>
+<pre class="r"><code>exp(coef(fit2a))</code></pre>
+<pre><code>## (Intercept)      height 
+##    0.159418    1.007694</code></pre>
+<pre class="r"><code># ROC + AUC
+starwarsWithoutNA$prob &lt;-predict(fit2a, type = &quot;response&quot;)
+ggplot(starwarsWithoutNA) +geom_roc(aes(d = y, m = prob), n.cuts = 0)</code></pre>
+<p><img src="/HW8_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc((ggplot(starwarsWithoutNA) +geom_roc(aes(d = y, m = prob), n.cuts = 0)))</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.4924242</code></pre>
+<pre class="r"><code># LR plot
+ggplot(starwarsWithoutNA, aes(height, prob)) + geom_point(aes(color = y))</code></pre>
+<p><img src="/HW8_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><em>According to the ROC cruve and logistic regression plot, it’s hard to predcit whether as species is a human by its height.</em></p>
+<p>2b. (2 pts) Predict the Human indicator variable (<code>y</code>) from <code>height</code> and <code>mass</code> (no interaction). Discuss the output briefly (you do not have to interpret any coeficients). Compute Accuracy, Sensitivity, and Specificity. Plot the ROC curve and compute the AUC.</p>
+<pre class="r"><code>fit2b &lt;-glm(y~ height + mass, data = starwarsWithoutNA, family = binomial(link = &quot;logit&quot;))
+summary(fit2b)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ height + mass, family = binomial(link = &quot;logit&quot;), 
+##     data = starwarsWithoutNA)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.1694  -1.0233  -0.7864   1.3523   1.4588  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -1.865889   1.487544  -1.254    0.210
+## height       0.008743   0.008493   1.029    0.303
+## mass        -0.001761   0.003180  -0.554    0.580
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 76.992  on 57  degrees of freedom
+## Residual deviance: 75.501  on 55  degrees of freedom
+## AIC: 81.501
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<pre class="r"><code>exp(coef(fit2b))</code></pre>
+<pre><code>## (Intercept)      height        mass 
+##   0.1547586   1.0087809   0.9982405</code></pre>
+<pre class="r"><code>prob2b &lt;- predict(fit2b, type = &quot;response&quot;)
+pred2b &lt;-ifelse(prob2b &gt;0.5,1,0)
+table(truth = starwarsWithoutNA$y, prediction = pred2b) %&gt;% addmargins</code></pre>
+<pre><code>##      prediction
+## truth  0 Sum
+##   0   36  36
+##   1   22  22
+##   Sum 58  58</code></pre>
+<pre class="r"><code># accuracy
+36/58</code></pre>
+<pre><code>## [1] 0.6206897</code></pre>
+<pre class="r"><code>#tpr 
+0</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>#tnr
+36/36</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>#ROC + AUC
+starwarsWithoutNA$prob2b &lt;- predict(fit2b, type = &quot;response&quot;)
+ROC2b &lt;-ggplot(starwarsWithoutNA) + geom_roc(aes(d = y, m = prob2b), n.cuts = 0)
+ROC2b</code></pre>
+<p><img src="/HW8_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROC2b)</code></pre>
+<pre><code>##   PANEL group      AUC
+## 1     1    -1 0.469697</code></pre>
+<p><em>Based on the ROC polt and logistic regression, there’s no significant difference in height between human and other speices and also no significant difference in mass between human and other species.Accuracy = 0.6206897, Sensitivity = 0, and Specificity = 1. AUC = 0.469697.</em></p>
+<p>2c. (3 pts) Predict this variable from the interaction of height and mass. Be sure to center your variables first, and save them to the starwars dataset as <code>mass_c</code> and <code>height_c</code>. Discuss the output. Compute Accuracy, Sensitivity, and Specificity. Plot the ROC curve and calculate the AUC. Compare the AUC with that of the main-effects model in 2b.</p>
+<pre class="r"><code>starwarsWithoutNA$massCenter &lt;- starwarsWithoutNA$mass - mean(starwarsWithoutNA$mass)
+starwarsWithoutNA$heightCenter &lt;-starwarsWithoutNA$height - mean(starwarsWithoutNA$height)
+
+
+fit2c &lt;-glm(y ~ heightCenter * massCenter, data = starwarsWithoutNA, family = binomial)
+summary(fit2c)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = y ~ heightCenter * massCenter, family = binomial, 
+##     data = starwarsWithoutNA)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.3617  -1.1386  -0.3897   1.1926   2.0403  
+## 
+## Coefficients:
+##                           Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept)              0.0372034  0.3484435   0.107   0.9150  
+## heightCenter            -0.0318035  0.0227264  -1.399   0.1617  
+## massCenter              -0.0004904  0.0024094  -0.204   0.8387  
+## heightCenter:massCenter -0.0010124  0.0005047  -2.006   0.0449 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 76.992  on 57  degrees of freedom
+## Residual deviance: 67.566  on 54  degrees of freedom
+## AIC: 75.566
+## 
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>coeftest(fit2c)</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##                            Estimate  Std. Error z value Pr(&gt;|z|)  
+## (Intercept)              0.03720340  0.34844354  0.1068  0.91497  
+## heightCenter            -0.03180354  0.02272635 -1.3994  0.16169  
+## massCenter              -0.00049040  0.00240936 -0.2035  0.83871  
+## heightCenter:massCenter -0.00101243  0.00050473 -2.0059  0.04487 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(fit2c))</code></pre>
+<pre><code>##             (Intercept)            heightCenter              massCenter 
+##               1.0379041               0.9686969               0.9995097 
+## heightCenter:massCenter 
+##               0.9989881</code></pre>
+<pre class="r"><code>prob2c &lt;-predict(fit2c, type=&quot;response&quot;)
+pred2c &lt;- ifelse(prob2c &gt;0.5, 1,0)
+table(truth = starwarsWithoutNA$y, prediction = pred2c) %&gt;% addmargins()</code></pre>
+<pre><code>##      prediction
+## truth  0  1 Sum
+##   0   25 11  36
+##   1   16  6  22
+##   Sum 41 17  58</code></pre>
+<pre class="r"><code># accuracy
+(25+6)/58</code></pre>
+<pre><code>## [1] 0.5344828</code></pre>
+<pre class="r"><code># tpr
+ 6/17</code></pre>
+<pre><code>## [1] 0.3529412</code></pre>
+<pre class="r"><code> #tnr
+ 25/41</code></pre>
+<pre><code>## [1] 0.6097561</code></pre>
+<pre class="r"><code># ROC + AUC
+ROC2c &lt;- ggplot(starwarsWithoutNA) + geom_roc(aes( d = y, m = prob2c),n.cuts = 0)
+ROC2c</code></pre>
+<p><img src="/HW8_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROC2c)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.6287879</code></pre>
+<p><em>According to the logistic regression, the interaction between heightCenter and massCenter is significant (p &lt; 0.05). Accuracy = 0.5344828, Sensitivity = 0.3529412, and Specificity = 0.6097561. AUC = 0.6287879.</em></p>
+<p>2d. (2 pts) We want to visualize the interaction, but it is continuous! We can get around this by setting mass_c to the mean (0) and plus/minus one standard deviation and then looking at the effect of height on the probability of being human. Below, in the code given, I take the starwars dataset and I duplicate it three times: to one, I add a column with <code>mass_c=0</code>, to another, I add <code>mass_c=sd(mass)</code>, and to the third I add <code>mass_c=-sd(mass)</code>. I stack them all on top of each other and add a label (<code>mass_cat</code>). Use this new dataset and <code>predict(..., newdata=starwars_new, type=&quot;response&quot;)</code> to get predicted probabilities from your interaction model, and then use ggplot to plot those predicted probabilities against height (use geom_line and set <code>color=mass_cat</code>). What do you see?</p>
+<pre class="r"><code>## Code to get you started on 2d
+starwars_new&lt;-bind_rows(mutate(starwarsWithoutNA,massCenter=0),
+                     mutate(starwarsWithoutNA,massCenter=sd(mass)),
+                     mutate(starwarsWithoutNA,massCenter=-sd(mass)))
+
+starwars_new&lt;-starwars_new%&gt;%
+  mutate(mass_cat=c(rep(&quot;mean&quot;,nrow(starwarsWithoutNA)),
+                    rep(&quot;mean+1sd&quot;,nrow(starwarsWithoutNA)),
+                    rep(&quot;mean-1sd&quot;,nrow(starwarsWithoutNA))))
+
+
+prob2d &lt;- predict(fit2c, newdata = starwars_new, type = &quot;response&quot;)
+
+plot2d &lt;-ggplot(starwars_new, aes(heightCenter, prob2d)) + geom_line(aes(color=mass_cat))
+plot2d</code></pre>
+<p><img src="/HW8_files/figure-html/unnamed-chunk-9-1.png" width="768" style="display: block; margin: auto;" />
+<em>The height is negative associated with the species human. I can see the interaction of mean, mean-1sd and mean+1sd joint at heightCenter = 0 and prob2d = 0.5.</em></p>
+<pre><code>## R version 3.5.1 (2018-07-02)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS  10.15.1
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] plotROC_2.2.1   forcats_0.4.0   stringr_1.4.0   purrr_0.3.3    
+##  [5] readr_1.3.1     tidyr_1.0.0     tibble_2.1.3    tidyverse_1.2.1
+##  [9] lmtest_0.9-37   zoo_1.8-6       ggplot2_3.2.1   dplyr_0.8.3    
+## [13] knitr_1.25     
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_0.2.5 xfun_0.10        haven_2.1.1      lattice_0.20-38 
+##  [5] colorspace_1.4-1 generics_0.0.2   vctrs_0.2.0      htmltools_0.4.0 
+##  [9] yaml_2.2.0       utf8_1.1.4       rlang_0.4.0      pillar_1.4.2    
+## [13] glue_1.3.1       withr_2.1.2      modelr_0.1.5     readxl_1.3.1    
+## [17] plyr_1.8.4       lifecycle_0.1.0  munsell_0.5.0    blogdown_0.17   
+## [21] gtable_0.3.0     cellranger_1.1.0 rvest_0.3.4      evaluate_0.14   
+## [25] labeling_0.3     fansi_0.4.0      broom_0.5.2      Rcpp_1.0.2      
+## [29] scales_1.0.0     backports_1.1.5  jsonlite_1.6     hms_0.5.1       
+## [33] digest_0.6.20    stringi_1.4.3    bookdown_0.16    grid_3.5.1      
+## [37] cli_1.1.0        tools_3.5.1      magrittr_1.5     lazyeval_0.2.2  
+## [41] crayon_1.3.4     pkgconfig_2.0.3  zeallot_0.1.0    ellipsis_0.3.0  
+## [45] xml2_1.2.2       lubridate_1.7.4  assertthat_0.2.1 rmarkdown_1.16  
+## [49] httr_1.4.1       rstudioapi_0.10  R6_2.4.0         nlme_3.1-141    
+## [53] compiler_3.5.1</code></pre>
+<pre><code>## [1] &quot;2019-12-10 15:32:03 CST&quot;</code></pre>
+<pre><code>##                                                                                            sysname 
+##                                                                                           &quot;Darwin&quot; 
+##                                                                                            release 
+##                                                                                           &quot;19.0.0&quot; 
+##                                                                                            version 
+## &quot;Darwin Kernel Version 19.0.0: Thu Oct 17 16:17:15 PDT 2019; root:xnu-6153.41.3~29/RELEASE_X86_64&quot; 
+##                                                                                           nodename 
+##                                                                               &quot;macteki-iMac.local&quot; 
+##                                                                                            machine 
+##                                                                                           &quot;x86_64&quot; 
+##                                                                                              login 
+##                                                                                             &quot;root&quot; 
+##                                                                                               user 
+##                                                                                     &quot;KevinHaoTing&quot; 
+##                                                                                     effective_user 
+##                                                                                     &quot;KevinHaoTing&quot;</code></pre>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

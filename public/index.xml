@@ -6,10 +6,19 @@
     <description>Recent content on HaoTing Huang</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Sun, 02 Oct 2016 22:55:05 -0400</lastBuildDate>
+    <lastBuildDate>Tue, 10 Dec 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>SDS348 in UT</title>
+      <link>/blog/sds348-in-ut/</link>
+      <pubDate>Tue, 10 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/blog/sds348-in-ut/</guid>
+      <description>This blog was created at December 10, 2019 to demostrate my ability of creating my own portfolio through R. I took SDS348 in UT with professor Woodward. I learned decent amount of knowledge regarding ggplot(), python and statistic analytic skills. The projects from this class were presented in Project tab</description>
+    </item>
     
     <item>
       <title>Projects</title>
@@ -17,72 +26,58 @@
       <pubDate>Sun, 02 Oct 2016 22:55:05 -0400</pubDate>
       
       <guid>/projects/</guid>
-      <description></description>
+      <description>Projects Here are some projects I have been working on:
+  Project 1 Exploratory Data Analysis
+  Project 2 Modeling, Testing, and Predicting
+  HW4
+  HW6
+  HW7
+  HW8
+  </description>
     </item>
     
     <item>
-      <title>Hello R Markdown</title>
-      <link>/blog/2015-07-23-r-rmarkdown/</link>
-      <pubDate>Thu, 23 Jul 2015 21:13:14 -0500</pubDate>
-      
-      <guid>/blog/2015-07-23-r-rmarkdown/</guid>
-      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this: Link to project 1
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.</description>
-    </item>
-    
-    <item>
-      <title>Creating a New Theme</title>
-      <link>/blog/creating-a-new-theme/</link>
-      <pubDate>Sun, 28 Sep 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/creating-a-new-theme/</guid>
-      <description>Introduction This tutorial will show you how to create a simple theme in Hugo. I assume that you are familiar with HTML, the bash command line, and that you are comfortable using Markdown to format content. I&#39;ll explain how Hugo uses templates and how you can organize your templates to create a theme. I won&#39;t cover using CSS to style your theme.
-We&#39;ll start with creating a new site with a very basic template.</description>
-    </item>
-    
-    <item>
-      <title>(Hu)go Template Primer</title>
-      <link>/blog/goisforlovers/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/goisforlovers/</guid>
-      <description>Hugo uses the excellent go html/template library for its template engine. It is an extremely lightweight engine that provides a very small amount of logic. In our experience that it is just the right amount of logic to be able to create a good static website. If you have used other template systems from different languages or frameworks you will find a lot of similarities in go templates.
-This document is a brief primer on using go templates.</description>
-    </item>
-    
-    <item>
-      <title>Getting Started with Hugo</title>
-      <link>/blog/hugoisforlovers/</link>
-      <pubDate>Wed, 02 Apr 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/hugoisforlovers/</guid>
-      <description>Step 1. Install Hugo Goto hugo releases and download the appropriate version for your os and architecture.
-Save it somewhere specific as we will be using it in the next step.
-More complete instructions are available at installing hugo
-Step 2. Build the Docs Hugo has its own example site which happens to also be the documentation site you are reading right now.
-Follow the following steps:
- Clone the hugo repository Go into the repo Run hugo in server mode and build the docs Open your browser to http://localhost:1313  Corresponding pseudo commands:</description>
-    </item>
-    
-    <item>
-      <title>Migrate to Hugo from Jekyll</title>
-      <link>/blog/migrate-from-jekyll/</link>
-      <pubDate>Mon, 10 Mar 2014 00:00:00 +0000</pubDate>
-      
-      <guid>/blog/migrate-from-jekyll/</guid>
-      <description>Move static content to static Jekyll has a rule that any directory not starting with _ will be copied as-is to the _site output. Hugo keeps all static content under static. You should therefore move it all there. With Jekyll, something that looked like
-▾ &amp;lt;root&amp;gt;/ ▾ images/ logo.png  should become
-▾ &amp;lt;root&amp;gt;/ ▾ static/ ▾ images/ logo.png  Additionally, you&#39;ll want any files that should reside at the root (such as CNAME) to be moved to static.</description>
-    </item>
-    
-    <item>
-      <title>Project 1: Exploratory Data Analysis</title>
-      <link>/blog/project1/</link>
+      <title>HW 4</title>
+      <link>/hw4-1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/blog/project1/</guid>
-      <description>HaoTing Huang hh25923 #data(package = .packages(all.available = TRUE)) library(datasets) library(dplyr) ## Warning: package &amp;#39;dplyr&amp;#39; was built under R version 3.5.2 ## ## Attaching package: &amp;#39;dplyr&amp;#39; ## The following objects are masked from &amp;#39;package:stats&amp;#39;: ## ## filter, lag ## The following objects are masked from &amp;#39;package:base&amp;#39;: ## ## intersect, setdiff, setequal, union library(ggplot2) ## Warning: package &amp;#39;ggplot2&amp;#39; was built under R version 3.5.2 library(fivethirtyeight) ## Warning: package &amp;#39;fivethirtyeight&amp;#39; was built under R version 3.</description>
+      <guid>/hw4-1/</guid>
+      <description>HaoTing Huang hh25923 This homework is due on Sep 29, 2019 at 11:59pm. Please submit as a pdf file on Canvas.
+For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.
+ How to submit this assignment All homework assignments will be completed using R Markdown. These .Rmd files consist of &amp;gt;text/syntax (formatted using Markdown) alongside embedded R code.</description>
+    </item>
+    
+    <item>
+      <title>HW 6</title>
+      <link>/hw6-1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/hw6-1/</guid>
+      <description>HaoTing Huang hh25923 This homework is due on Oct 27, 2019 at 11:59pm. Please submit as a pdf file on Canvas.
+For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.
+ How to submit this assignment All homework assignments will be completed using R Markdown. These .Rmd files consist of &amp;gt;text/syntax (formatted using Markdown) alongside embedded R code.</description>
+    </item>
+    
+    <item>
+      <title>HW 7</title>
+      <link>/hw7-1/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/hw7-1/</guid>
+      <description>HaoTing Huang hh25923 This homework is due on Nov 3, 2019 at 11:59pm. Please submit as a pdf file on Canvas.
+For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.
+ How to submit this assignment All homework assignments will be completed using R Markdown. These .Rmd files consist of text/syntax (formatted using Markdown) alongside embedded R code.</description>
+    </item>
+    
+    <item>
+      <title>HW 8</title>
+      <link>/hw8/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/hw8/</guid>
+      <description>HaoTing Huang hh25923 This homework is due on Nov 10, 2019 at 11:59pm. Please submit as a pdf file on Canvas.
+For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.
+ How to submit this assignment All homework assignments will be completed using R Markdown. These .Rmd files consist of text/syntax (formatted using Markdown) alongside embedded R code.</description>
     </item>
     
     <item>
@@ -92,6 +87,15 @@ Follow the following steps:
       
       <guid>/project1/</guid>
       <description>HaoTing Huang hh25923 #data(package = .packages(all.available = TRUE)) library(datasets) library(dplyr) ## Warning: package &amp;#39;dplyr&amp;#39; was built under R version 3.5.2 ## ## Attaching package: &amp;#39;dplyr&amp;#39; ## The following objects are masked from &amp;#39;package:stats&amp;#39;: ## ## filter, lag ## The following objects are masked from &amp;#39;package:base&amp;#39;: ## ## intersect, setdiff, setequal, union library(ggplot2) ## Warning: package &amp;#39;ggplot2&amp;#39; was built under R version 3.5.2 library(fivethirtyeight) ## Warning: package &amp;#39;fivethirtyeight&amp;#39; was built under R version 3.</description>
+    </item>
+    
+    <item>
+      <title>Project 2: Modeling, Testing, and Predicting</title>
+      <link>/project2/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/project2/</guid>
+      <description>Modeling # Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph. library(sandwich) library(fivethirtyeight) library(datasets) library(dplyr) library(ggplot2) library(tidyr) library(lmtest) head(police_killings) ## # A tibble: 6 x 34 ## name age gender raceethnicity month day year streetaddress city state latitude longitude ## &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;int&amp;gt; &amp;lt;int&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; ## 1 A&amp;#39;do… 16 Male Black Febr… 23 2015 Clearview Ln Mill… AL 32.</description>
     </item>
     
   </channel>

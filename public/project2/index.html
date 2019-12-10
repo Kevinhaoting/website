@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="HaoTing Huang" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project 2: Modeling, Testing, and Predicting</title>
+    <meta name="generator" content="Hugo 0.60.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project2/">Project 2: Modeling, Testing, and Predicting</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="modeling" class="section level1">
+<h1>Modeling</h1>
+<pre class="r"><code># Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph.
+library(sandwich)
+library(fivethirtyeight)
+library(datasets)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(lmtest)
+
+head(police_killings)</code></pre>
+<pre><code>## # A tibble: 6 x 34
+## name age gender raceethnicity month day year
+streetaddress city state latitude longitude
+## &lt;chr&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt; &lt;chr&gt;
+&lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 A&#39;do… 16 Male Black Febr… 23 2015 Clearview Ln Mill…
+AL 32.5 -86.4
+## 2 Aaro… 27 Male White April 2 2015 300 block Ir… Pine…
+LA 31.3 -92.4
+## 3 Aaro… 26 Male White March 14 2015 22nd Ave and… Keno…
+WI 42.6 -87.8
+## 4 Aaro… 25 Male Hispanic/Lat… March 11 2015 3000
+Seminol… Sout… CA 33.9 -118.
+## 5 Adam… 29 Male White March 19 2015 364 Hiwood A… Munr…
+OH 41.1 -81.4
+## 6 Adam… 29 Male White March 7 2015 18th St and … Phoe…
+AZ 33.5 -112.
+## # … with 22 more variables: state_fp &lt;int&gt;, county_fp
+&lt;int&gt;, tract_ce &lt;int&gt;, geo_id &lt;dbl&gt;,
+## # county_id &lt;int&gt;, namelsad &lt;chr&gt;, lawenforcementagency
+&lt;chr&gt;, cause &lt;chr&gt;, armed &lt;chr&gt;,
+## # pop &lt;int&gt;, share_white &lt;dbl&gt;, share_black &lt;dbl&gt;,
+share_hispanic &lt;dbl&gt;, p_income &lt;int&gt;,
+## # h_income &lt;int&gt;, county_income &lt;int&gt;, comp_income
+&lt;dbl&gt;, county_bucket &lt;int&gt;, nat_bucket &lt;int&gt;,
+## # pov &lt;dbl&gt;, urate &lt;dbl&gt;, college &lt;dbl&gt;</code></pre>
+<pre class="r"><code>project2 &lt;- police_killings %&gt;% select(age, gender, month, day, raceethnicity) %&gt;% filter(age != &quot;NA&quot;) %&gt;% filter(raceethnicity != &quot;NA&quot;) %&gt;% filter(raceethnicity != &quot;Native American&quot;) %&gt;% mutate(month_num = recode_factor(month, &quot;January&quot; = &quot;1&quot; , &quot;February&quot; = &quot;2&quot;, &quot;March&quot; = &quot;3&quot;,&quot;April&quot; = &quot;4&quot;, &quot;May&quot; = &quot;5&quot;, &quot;June&quot; = &quot;6&quot;, &quot;July&quot; = &quot;7&quot;, &quot;August&quot; = &quot;8&quot;, &quot;September&quot; = &quot;9&quot;, &quot;October&quot; = &quot;10&quot;, &quot;November&quot; = &quot;11&quot;,&quot;December&quot; = &quot;12&quot;)) %&gt;% mutate_if(is.factor, as.integer)
+
+head(project2)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##     age gender month      day raceethnicity   month_num
+##   &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;               &lt;int&gt;
+## 1    16 Male   February    23 Black                   2
+## 2    27 Male   April        2 White                   4
+## 3    26 Male   March       14 White                   3
+## 4    25 Male   March       11 Hispanic/Latino         3
+## 5    29 Male   March       19 White                   3
+## 6    29 Male   March        7 White                   3</code></pre>
+<p><em>I use one of my original datasets from project 1 “police_killings” for project 2. This dataset is about the police killing incidents in 2015. I select 5 variables from the dataset to build the model.</em></p>
+</div>
+<div id="manova" class="section level1">
+<h1>1. MANOVA</h1>
+<pre class="r"><code># Ho:For age and day, means of each gender are equal
+# Ha: For at least one DV, at least one gender mean is different
+projectMAN &lt;-manova(cbind(age, day) ~gender, data = project2)
+summary(projectMAN)</code></pre>
+<pre><code>##            Df    Pillai approx F num Df den Df Pr(&gt;F)
+## gender      1 0.0052034   1.1586      2    443 0.3149
+## Residuals 444</code></pre>
+<pre class="r"><code># The probability of at least one type I error would be
+1 - 0.95**7 # conduct 7 hypothesis test</code></pre>
+<pre><code>## [1] 0.3016627</code></pre>
+<p><em>A one-way multivariate analysis of variance (MANOVA) was conducted to determine the effect of the gender (male, female) on two dependent variables (age, and day). There is no significant difference was found among the 2 gender (male and female) on the 2 dependent variable (age and day). p value is 0.3149. However, if my result had been significant, I would perform 1(MANOVA) + 2(ANOVA) + 2x2(t-test, 2 for each ANOVA) for a maximum total of 7 tests.The probability of at least one type I error would be 0.3016627. There are several assumptions for MANOVA, such as Random samples, independent observations, No extreme univariate or multivariate outliers, No multicollinearity..etc. The dataset has lots of oversvation and meet the “Random samples”, “independent observations”, however, the dataset is failed to satisfiy the assumption “Linear relationships among DVs” and “Multivariate normality of DVs”.</em></p>
+<p>#2. Randomization Test</p>
+<pre class="r"><code>library(vegan)
+head(project2)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##     age gender month      day raceethnicity   month_num
+##   &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;               &lt;int&gt;
+## 1    16 Male   February    23 Black                   2
+## 2    27 Male   April        2 White                   4
+## 3    26 Male   March       14 White                   3
+## 4    25 Male   March       11 Hispanic/Latino         3
+## 5    29 Male   March       19 White                   3
+## 6    29 Male   March        7 White                   3</code></pre>
+<pre class="r"><code>#Randomization test
+# Ho: mean age of dead is the same for male vs. female
+# Ha: mean age of dead is different for male vs.female
+
+project2 %&gt;% group_by(gender) %&gt;% summarise(means = mean(age), ) %&gt;% summarise(mean_diff = diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   mean_diff
+##       &lt;dbl&gt;
+## 1      1.34</code></pre>
+<pre class="r"><code># mean_ diff 1.34108        
+
+project2_rand_dist &lt;-vector()
+for(i in 1:5000){
+  new &lt;-data.frame(age = sample(project2$age), gender = project2$gender)
+  project2_rand_dist[i] &lt;- mean(new[new$gender == &quot;Male&quot;,]$age)-
+    mean(new[new$gender == &quot;Female&quot;,]$age)
+}
+
+{hist(project2_rand_dist, main = &quot;&quot;, ylab = &quot;&quot;); abline(v = 1.34108 , col = &quot;red&quot;)}</code></pre>
+<p><img src="/Project2_files/figure-html/2.%20randomization%20test-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mean(project2_rand_dist &gt; 1.34108   )*2 # p-value</code></pre>
+<pre><code>## [1] 0.6668</code></pre>
+<p><em>I performe the randomization test on my data to see whether there was a difference in mean age of dead. my null hypothesis is Ho: mean age of dead is the same for male vs. female and my alternative hypothesis is Ha: mean age of dead is different for male vs.female. The plot of null distribution was generated and the p value was 0.6496. Based on the result and p value, there was no significant difference in mean age of dead for male vs. female.</em></p>
+</div>
+<div id="linear-regression-model" class="section level1">
+<h1>3. Linear Regression Model</h1>
+<pre class="r"><code>head(project2)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##     age gender month      day raceethnicity   month_num
+##   &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;int&gt; &lt;chr&gt;               &lt;int&gt;
+## 1    16 Male   February    23 Black                   2
+## 2    27 Male   April        2 White                   4
+## 3    26 Male   March       14 White                   3
+## 4    25 Male   March       11 Hispanic/Latino         3
+## 5    29 Male   March       19 White                   3
+## 6    29 Male   March        7 White                   3</code></pre>
+<pre class="r"><code>project2$age_c &lt;- project2$age - mean(project2$age)
+project2$day_c &lt;- project2$day - mean(project2$day)
+project2$month_num_c &lt;- project2$month_num - mean(project2$month_num)
+project2%&gt;% group_by(raceethnicity) %&gt;% summarise()</code></pre>
+<pre><code>## # A tibble: 4 x 1
+##   raceethnicity         
+##   &lt;chr&gt;                 
+## 1 Asian/Pacific Islander
+## 2 Black                 
+## 3 Hispanic/Latino       
+## 4 White</code></pre>
+<pre class="r"><code>project2fit &lt;- lm(age ~ gender * month_num_c, data = project2)
+summary(project2fit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = age ~ gender * month_num_c, data =
+project2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -21.291 -9.337 -2.251 7.683 49.762
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 37.0833 3.0192 12.283 &lt;2e-16 ***
+## genderMale 0.2072 3.0823 0.067 0.946
+## month_num_c 2.8333 2.3869 1.187 0.236
+## genderMale:month_num_c -2.8068 2.4306 -1.155 0.249
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 12.81 on 442 degrees of freedom
+## Multiple R-squared: 0.003656, Adjusted R-squared:
+-0.003107
+## F-statistic: 0.5406 on 3 and 442 DF, p-value: 0.6547</code></pre>
+<pre class="r"><code>head(project2)</code></pre>
+<pre><code>## # A tibble: 6 x 9
+## age gender month day raceethnicity month_num age_c day_c
+month_num_c
+## &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 16 Male February 23 Black 2 -21.2 7.25 -1
+## 2 27 Male April 2 White 4 -10.2 -13.8 1
+## 3 26 Male March 14 White 3 -11.2 -1.75 0
+## 4 25 Male March 11 Hispanic/Latino 3 -12.2 -4.75 0
+## 5 29 Male March 19 White 3 -8.23 3.25 0
+## 6 29 Male March 7 White 3 -8.23 -8.75 0</code></pre>
+<pre class="r"><code># Age = 36.9440 - 0.3551(Male) -0.3686 (month_num_c) +0.4325(genderMale:month_num_c)
+
+lmplot &lt;-project2 %&gt;% select(age, gender, month_num_c)
+
+ggplot(lmplot, aes(x = age, y = month_num_c, color = gender)) +
+ geom_point(size = 4) + geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><img src="/Project2_files/figure-html/3.%20linear%20regression%20model-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># check  linearity and homoskedasticity 
+project2resids &lt;- project2fit$residuals
+project2fitvals &lt;- project2fit$fitted.values
+ggplot()+ geom_point(aes(project2fitvals,project2resids)) + geom_hline(yintercept = 0, color=&quot;red&quot;)</code></pre>
+<p><img src="/Project2_files/figure-html/3.%20linear%20regression%20model-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># check normality
+ggplot()+ geom_histogram(aes(project2resids, bins = 20))</code></pre>
+<p><img src="/Project2_files/figure-html/3.%20linear%20regression%20model-3.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot()+geom_qq(aes(sample=project2resids))+geom_qq_line(aes(sample=project2resids))</code></pre>
+<p><img src="/Project2_files/figure-html/3.%20linear%20regression%20model-4.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(sandwich)
+# recompute regression results with robust standard errors via `coeftest(..., vcov=vcovHC(...))
+coeftest(project2fit)</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 37.08333 3.01919 12.2825 &lt;2e-16 ***
+## genderMale 0.20725 3.08233 0.0672 0.9464
+## month_num_c 2.83333 2.38688 1.1870 0.2358
+## genderMale:month_num_c -2.80683 2.43056 -1.1548 0.2488
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(project2fit,  vcov =  vcovHAC(project2fit))</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 37.08333 2.69392 13.7655 &lt;2e-16 ***
+## genderMale 0.20725 2.75592 0.0752 0.9401
+## month_num_c 2.83333 1.77280 1.5982 0.1107
+## genderMale:month_num_c -2.80683 1.86922 -1.5016 0.1339
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>summary(project2fit)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = age ~ gender * month_num_c, data =
+project2)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -21.291 -9.337 -2.251 7.683 49.762
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 37.0833 3.0192 12.283 &lt;2e-16 ***
+## genderMale 0.2072 3.0823 0.067 0.946
+## month_num_c 2.8333 2.3869 1.187 0.236
+## genderMale:month_num_c -2.8068 2.4306 -1.155 0.249
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 12.81 on 442 degrees of freedom
+## Multiple R-squared: 0.003656, Adjusted R-squared:
+-0.003107
+## F-statistic: 0.5406 on 3 and 442 DF, p-value: 0.6547</code></pre>
+<p><em>Based on the coefficent test of linear regression model, we can see the full model with gender x raceethnicity interaction and it effect on age. According to the coefficcient estiamtes. We can interpret the model like the following equation: Age = 37.0833 + 0.2072(Male) + 2.8333(month_num_c) - 2.8068(genderMale:month_num_c). I check the assumptions graphically. The graphs show that the dataset does not satisfy all the assumptions (linearity, normality, and homoskedasticity). The result of robust standard errors via `coeftest(…, vcov=vcovHC(…)) was computed. Comparing the normal theory SEs and robust SEs, all robust SEs are smaller than normal theory SEs The result of p value have chagned but the conclusion stay the same. 0.003656 proportion (Multiple R-squared) in the response variable explained by the overall model.</em></p>
+</div>
+<div id="compute-bootstrapped-standard-errors" class="section level1">
+<h1>4. Compute Bootstrapped Standard Errors</h1>
+<pre class="r"><code>library(sandwich)
+project2_resid_resamp &lt;- replicate(5000,{
+  new_resid &lt;- sample(project2resids, replace = TRUE)
+  newdat &lt;- project2
+  newdat$new_y &lt;- project2fitvals + new_resid
+  project2fitboost &lt;- lm(new_y ~ gender * month_num_c, data = newdat)
+  coef(project2fitboost)
+})
+project2_resid_resamp%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd) # boostrapped SEs</code></pre>
+<pre><code>## (Intercept) genderMale month_num_c
+genderMale:month_num_c
+## 1 3.050893 3.114782 2.362615 2.397953</code></pre>
+<pre class="r"><code>coeftest(project2fit) # normal theory SEs</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 37.08333 3.01919 12.2825 &lt;2e-16 ***
+## genderMale 0.20725 3.08233 0.0672 0.9464
+## month_num_c 2.83333 2.38688 1.1870 0.2358
+## genderMale:month_num_c -2.80683 2.43056 -1.1548 0.2488
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>coeftest(project2fit,  vcov =  vcovHAC(project2fit)) #Robsut SEs</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 37.08333 2.69392 13.7655 &lt;2e-16 ***
+## genderMale 0.20725 2.75592 0.0752 0.9401
+## month_num_c 2.83333 1.77280 1.5982 0.1107
+## genderMale:month_num_c -2.80683 1.86922 -1.5016 0.1339
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>#3.011814   3.080563    2.387562    2.424464    </code></pre>
+<p><em>Comparing the SEs from boostrapped, nomral theory, and robsut, boostrapped SEs are more similar to normal theory SEs. All the robust SEs are smaller than SEs from normal theory and boostrapped SEs.</em></p>
+</div>
+<div id="logistic-regression-predicting-a-binary-categorical-variable" class="section level1">
+<h1>5. Logistic Regression Predicting a Binary Categorical Variable</h1>
+<pre class="r"><code>library(plotROC)
+head(project2)</code></pre>
+<pre><code>## # A tibble: 6 x 9
+## age gender month day raceethnicity month_num age_c day_c
+month_num_c
+## &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 16 Male February 23 Black 2 -21.2 7.25 -1
+## 2 27 Male April 2 White 4 -10.2 -13.8 1
+## 3 26 Male March 14 White 3 -11.2 -1.75 0
+## 4 25 Male March 11 Hispanic/Latino 3 -12.2 -4.75 0
+## 5 29 Male March 19 White 3 -8.23 3.25 0
+## 6 29 Male March 7 White 3 -8.23 -8.75 0</code></pre>
+<pre class="r"><code>project2%&gt;% group_by(month) %&gt;% summarise()</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   month   
+##   &lt;chr&gt;   
+## 1 April   
+## 2 February
+## 3 January 
+## 4 June    
+## 5 March   
+## 6 May</code></pre>
+<pre class="r"><code>forlog &lt;- project2 %&gt;% mutate(y = ifelse(gender == &quot;Male&quot;,1,0))
+head(forlog)</code></pre>
+<pre><code>## # A tibble: 6 x 10
+## age gender month day raceethnicity month_num age_c day_c
+month_num_c y
+## &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+&lt;dbl&gt;
+## 1 16 Male February 23 Black 2 -21.2 7.25 -1 1
+## 2 27 Male April 2 White 4 -10.2 -13.8 1 1
+## 3 26 Male March 14 White 3 -11.2 -1.75 0 1
+## 4 25 Male March 11 Hispanic/Latino 3 -12.2 -4.75 0 1
+## 5 29 Male March 19 White 3 -8.23 3.25 0 1
+## 6 29 Male March 7 White 3 -8.23 -8.75 0 1</code></pre>
+<pre class="r"><code>logfit &lt;- glm(y ~ age + month_num, data = forlog, family = &quot;binomial&quot;)
+summary(logfit)</code></pre>
+<pre><code>##
+## Call:
+## glm(formula = y ~ age + month_num, family = &quot;binomial&quot;,
+data = forlog)
+##
+## Deviance Residuals:
+## Min 1Q Median 3Q Max
+## -2.6885 0.2538 0.2925 0.3315 0.3991
+##
+## Coefficients:
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) 2.114711 0.828663 2.552 0.0107 *
+## age 0.007972 0.018416 0.433 0.6651
+## month_num 0.232224 0.173819 1.336 0.1815
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## (Dispersion parameter for binomial family taken to be 1)
+##
+## Null deviance: 163.27 on 445 degrees of freedom
+## Residual deviance: 161.23 on 443 degrees of freedom
+## AIC: 167.23
+##
+## Number of Fisher Scoring iterations: 6</code></pre>
+<pre class="r"><code>coeftest(logfit)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) 2.1147109 0.8286634 2.5520 0.01071 *
+## age 0.0079722 0.0184162 0.4329 0.66509
+## month_num 0.2322237 0.1738188 1.3360 0.18155
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(logfit))</code></pre>
+<pre><code>## (Intercept)         age   month_num 
+##    8.287190    1.008004    1.261402</code></pre>
+<pre class="r"><code># confusion matrix
+project2_prob&lt;-predict(logfit,type=&quot;response&quot;)
+project2_pred &lt;- ifelse(project2_prob &gt; 0.5,1,0)
+table(truth = forlog$y, prediction = project2_pred) %&gt;% addmargins()</code></pre>
+<pre><code>##      prediction
+## truth   1 Sum
+##   0    20  20
+##   1   426 426
+##   Sum 446 446</code></pre>
+<pre class="r"><code># class_ diag
+class_diag&lt;-function(probs,truth){
+  
+  tab&lt;-table(factor(probs&gt;.5,levels=c(&quot;FALSE&quot;,&quot;TRUE&quot;)),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE &amp; is.logical(truth)==FALSE) truth&lt;-as.numeric(truth)-1
+  
+  #CALCULATE EXACT AUC
+  ord&lt;-order(probs, decreasing=TRUE)
+  probs &lt;- probs[ord]; truth &lt;- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup&lt;-c(probs[-1]&gt;=probs[-length(probs)], FALSE)
+  TPR&lt;-c(0,TPR[!dup],1); FPR&lt;-c(0,FPR[!dup],1)
+  
+  n &lt;- length(TPR)
+  auc&lt;- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+
+# discuss the Accuracy, Sensitivity (TPR), Specificity (TNR)
+
+table(truth = forlog$y, prediction = project2_pred) %&gt;% addmargins()</code></pre>
+<pre><code>##      prediction
+## truth   1 Sum
+##   0    20  20
+##   1   426 426
+##   Sum 446 446</code></pre>
+<pre class="r"><code>class_diag(project2_prob,forlog$y)</code></pre>
+<pre><code>##        acc sens spec      ppv       auc
+## 1 0.955157    1    0 0.955157 0.5929577</code></pre>
+<pre class="r"><code># log-odds density plot
+forlog$logit &lt;-predict(logfit, type = &quot;link&quot;)
+
+forlog%&gt;%ggplot()+geom_density(aes(logit,color=gender,fill=gender), alpha=.4)+
+  theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab(&quot;predictor (logit)&quot;)</code></pre>
+<p><img src="/Project2_files/figure-html/5.%20logistic%20regression%20predicting%20a%20binary%20categorical%20variable-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># ROC curve
+project2_ROC &lt;-ggplot(logfit) + geom_roc(aes(d = y, m = project2_prob), n.cuts = 0)
+project2_ROC</code></pre>
+<p><img src="/Project2_files/figure-html/5.%20logistic%20regression%20predicting%20a%20binary%20categorical%20variable-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(project2_ROC)</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.5929577</code></pre>
+<pre class="r"><code># 10-fold CV
+
+set.seed(1234)
+k=10
+
+data1&lt;-forlog[sample(nrow(forlog)),]
+folds&lt;-cut(seq(1:nrow(forlog)),breaks=k,labels=F)
+
+diags&lt;-NULL
+for(i in 1:k){
+  train&lt;-data1[folds!=i,]
+  test&lt;-data1[folds==i,]
+  truth&lt;-test$y
+  
+  fit1c&lt;-glm(y ~ age + month_num,data=train,family=&quot;binomial&quot;)
+  probs1c&lt;-predict(fit1c,newdata = test,type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs1c,truth))
+}
+
+apply(diags,2,mean)</code></pre>
+<pre><code>##       acc      sens      spec       ppv       auc 
+## 0.9550505 1.0000000 0.0000000 0.9550505 0.5438668</code></pre>
+<p><em>I perform a logistic regression predicting my gender categorical variable (binary –&gt; Male(1) vs Female(0)) from age and month. We can interpret coefficient estimates as follow: The predicted odds of gender is 8.287190 when age = month = 0. Holding the age constant, going up 1 age mutiplies odds by 1.008004. Holding the month_num constant, going up 1 month mutiplies odds by 1.261402. We can see the model as this equation: Odds = 8.287190 x 1.008004^age x 1.261402^month_num.</em></p>
+<p><em>The confustion matrix table is generated and I compare its result with the self-define function,class_diag(). Two results are mathced. Accuracy = 0.955157, Sensitivity (TPR) = 1, Specificity (TNR) = 0, Recall (PPV) = 0.955157.</em></p>
+<p><em>The density of log-odds plot is generated. The results of female and male are bascially matched.</em></p>
+<p><em>The ROC curve and AUC are generated. Based on the ROC and AUC (0.5929577), the prediction is not great. It’s hard to predict the gender from just age and month.</em></p>
+<p><em>The 10-fold CV is performed and the average out-of-sample Accuracy = 0.9550505, Sensitivity = 1, Specificity = 0, Recall(pvv) = 0.9550505, AUC = 0.5438668.</em></p>
+</div>
+<div id="choose-one-variable-you-want-to-predict" class="section level1">
+<h1>6. Choose one variable you want to predict</h1>
+<pre class="r"><code>library(glmnet)
+head(forlog)</code></pre>
+<pre><code>## # A tibble: 6 x 11
+## age gender month day raceethnicity month_num age_c day_c
+month_num_c y logit
+## &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+&lt;dbl&gt; &lt;dbl&gt;
+## 1 16 Male February 23 Black 2 -21.2 7.25 -1 1 2.71
+## 2 27 Male April 2 White 4 -10.2 -13.8 1 1 3.26
+## 3 26 Male March 14 White 3 -11.2 -1.75 0 1 3.02
+## 4 25 Male March 11 Hispanic/Latino 3 -12.2 -4.75 0 1
+3.01
+## 5 29 Male March 19 White 3 -8.23 3.25 0 1 3.04
+## 6 29 Male March 7 White 3 -8.23 -8.75 0 1 3.04</code></pre>
+<pre class="r"><code>ymatrix &lt;- as.matrix(forlog$y)
+xmatrix &lt;- forlog %&gt;% dplyr::select(age,month_num) %&gt;% scale%&gt;%as.matrix()
+cv6 &lt;-cv.glmnet(xmatrix,ymatrix, family = &quot;binomial&quot;)
+lasso6 &lt;-glmnet(xmatrix,ymatrix, family = &quot;binomial&quot;, lambda = cv6$lambda.1se)
+coef(lasso6)</code></pre>
+<pre><code>## 3 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                   s0
+## (Intercept) 3.058707
+## age         0.000000
+## month_num   .</code></pre>
+<pre class="r"><code># 10-fold CV
+set.seed(1234) 
+k=10
+data6&lt;-forlog[sample(nrow(forlog)),]
+folds6&lt;-cut(seq(1:nrow(forlog)),breaks=k,labels=F)
+diags6&lt;-NULL 
+for(i in 1:k){
+  train6&lt;-data6[folds!=i,] 
+  test6&lt;-data6[folds==i,] 
+  truth6&lt;-test6$y
+  
+  fit6&lt;-glm(y~age,data=train6,family=&quot;binomial&quot;) 
+  probs6&lt;-predict(fit6,newdata = test6,type=&quot;response&quot;)
+  preds6&lt;-ifelse(probs6&gt;.5,1,0)
+  diags6&lt;-rbind(diags6,class_diag(probs6,truth6)) 
+}
+
+diags6%&gt;%summarize_all(mean)</code></pre>
+<pre><code>##         acc sens spec       ppv       auc
+## 1 0.9550505    1    0 0.9550505 0.4983759</code></pre>
+<pre class="r"><code>apply(diags,2,mean)</code></pre>
+<pre><code>##       acc      sens      spec       ppv       auc 
+## 0.9550505 1.0000000 0.0000000 0.9550505 0.5438668</code></pre>
+<p><em>According to the Lasso regression, age is the retained predictor of gender.</em></p>
+<p><em>10-fold CV using Lasso regression model. Comparing the Lasso regression 10-fold CV with the CV from part 5, acc, sens, spec, and ppv remain the same. However, AUC is lower to 0.4983759 in Lasso regression 10-fold. The model from part 5 actually more fit than the Lasso regression model.</em></p>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

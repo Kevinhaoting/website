@@ -1,0 +1,208 @@
+---
+title: "HW 7"
+author: "SDS348 Fall 2019"
+date: ""
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+opts_chunk$set(fig.align="center", fig.height=5, message=FALSE, warning=FALSE, fig.width=8, tidy.opts=list(width.cutoff=60),tidy=TRUE)
+```
+
+## HaoTing Huang hh25923
+
+**This homework is due on Nov 3, 2019 at 11:59pm. Please submit as a pdf file on Canvas.**
+
+*For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.*
+
+> ### How to submit this assignment
+> All homework assignments will be completed using R Markdown. These `.Rmd` files consist of text/syntax (formatted using Markdown) alongside embedded R code. 
+> When you have completed the assignment (by adding R code inside codeblocks and supporting text outside of the codeblocks), create your document as follows:
+
+> - Click the "Knit" button (above) to create an .html file
+> - Open the html file in your internet browser to view
+> - Go to `File > Print` and print your .html file to a .pdf
+> - (or knit to PDF)
+> - Upload the .pdf file to Canvas
+
+
+---
+
+### Question 1a (3 pts)
+
+- Run the following code to generate some play data (variables x and y). Then, regress y on x and call summary() on the fitted model. Make a scatterplot (either base R or ggplot) to eyeball whether homoskedasticity is met (i.e., do the points fan out as you go up the line?). Then, run the Breuch-Pagan test `bptest()` to formally test this null hypothesis. If you reject the null hypothesis of homoskedasticity, redo the regression using heteroskedasticity robust standard errors. How does this change your t-statistics and p-values?
+
+You will need the `lmtest` package and the `sandwich` package in order to do things like `bptest(fit)` and `coeftest(fit,vcov=vcovHC(fit))`; install them if you haven't.
+
+```{R}
+library(tidyverse)
+library(sandwich)
+library(lmtest)
+#install.packages("lmtest")
+#installed.packages("sandwich")
+## IMPORTANT: type version into your console to see what version of R you are running
+## If 3.6 or later, uncomment the following line and run it before set.seed(348); otherwise do not!
+# RNGkind(sample.kind="Rounding")
+
+set.seed(348)
+x <- runif(55, 0, 1)
+#x
+y <- .1 * rnorm(55, x, x)
+#y
+dataHW7 <- data.frame(x,y)
+mymodelHW7 <- lm(y~x, data = dataHW7)
+summary(mymodelHW7)
+resmymodelHW7 <-mymodelHW7$residuals
+#resmymodelHW7
+fitvalHW7 <- mymodelHW7$fitted.values
+# ggplot() + geom_histogram(aes(resmymodelHW7))
+ggplot() + geom_qq(aes(sample = resmymodelHW7)) + geom_qq_line(aes(sample = resmymodelHW7))
+#summary(mymodelHW7)
+
+
+# Breuch-Pagan test
+bptest(mymodelHW7) # (p < 0.05, reject the null of the model is homo)
+
+# using robust
+coeftest(mymodelHW7, vcov = vcovHC(mymodelHW7))
+```
+*Eyeball the ggplot, the homoskedasticiyt is not met. Breuch-Pagan test also indicate that the homoskedasticity is not met. So I use the heteroskedasticity robust standard errors to do the regression. My original p value is 0.0436 and my new p value is 0.09217. My t statistic change from 2.067 to 1.7151.*
+
+
+### Question 1b (3 pts)
+
+- Run the following code to generate more play data (new variables x and y). Then, regress y on x and call summary. Make a scatterplot (either base R or ggplot) to eyeball whether homoskedasticity is met. Then, use the Breuch-Pagan test `bptest()` to formally test this null hypothesis. Regardless of the result, redo the regression using heteroskedasticity robust standard errors. How does this change your t-statistics and p-values? How does this change differ from before (both in direction and magnitude)?
+
+```{R}
+## IMPORTANT: type version into your console to see what version of R you are running
+## If 3.6 or later, uncomment the following line and run it before set.seed(348); otherwise do not!
+# RNGkind(sample.kind="Rounding")
+set.seed(348)
+x <- runif(55, 0, 1)
+y <- .1 * rnorm(55, x, .6)
+data2HW7 <- data.frame(x,y)
+mymodel2HW7 <- lm(y~x, data = data2HW7)
+summary(mymodel2HW7)
+resmymodel2HW7 <-mymodel2HW7$residuals
+fitval2HW7 <- mymodel2HW7$fitted.values
+
+ggplot() + geom_qq(aes(sample = resmymodel2HW7)) + geom_qq_line(aes(sample = resmymodel2HW7))
+
+bptest(mymodel2HW7) # p > 0.05, we cant reject the null --> the model is homo
+
+coeftest(mymodel2HW7, vcov = vcovHC(mymodel2HW7))
+
+```
+*My p value chagne from 0.0217 to 0.0175. My t value chagne from 2.365 to 2.453 The magnitude of the chagnes are smaller than the changes in Q1.*
+
+### Question 1c (3 pts)
+
+Using `x` and `y` from 1b, calculate the bootstrap standard error of the slope by resampling observations (i.e., rows) from your dataframe with replacement. Calculate the boostrap standard error of the slope by resampling residuals (from the model fit in 2b, with replacement); then add them to the fitted values to get the new "data", compute the regression coefficient, save, and repeat. For each, use 5000 iterations. How do your results compare with the standard errors from question 1b? Would you still reject the null hypothesis using these standard errors?
+
+```{R}
+## IMPORTANT: type version into your console to see what version of R you are running
+## If 3.6 or later, uncomment the following line and run it before set.seed(348); otherwise do not!
+# RNGkind(sample.kind="Rounding")
+set.seed(348)
+x <- runif(55, 0, 1)
+y <- .1 * rnorm(55, x, .6)
+data3HW7 <- data.frame(x,y)
+
+
+mymodel3HW7 <- lm(y~x, data = data3HW7)
+resmymodel3HW7 <-mymodel3HW7$residuals
+fitval3HW7 <- mymodel3HW7$fitted.values
+
+
+resid_resampHW7 <- replicate(5000,{
+  new_residsHW7 <- sample(resmymodel3HW7, replace = TRUE)
+  data3HW7$new_y <-fitval3HW7 + new_residsHW7
+  mymodel3HW7 <- lm(new_y~x, data = data3HW7)
+  coef(mymodel3HW7)
+})
+
+resid_resampHW7 %>%t%>%as.data.frame%>%summarize_all(sd)
+coeftest(mymodel2HW7, vcov = vcovHC(mymodel2HW7))
+```
+*The result SE from boostrap is 0.02601614. It is similart to the result if 1b 0.0254661 and we still reject the null.*
+
+### Question 2a (3 pts)
+
+Using the `msleep` data (in ggplot2), regress `sleep_rem` on the interaction of `brainwt` and `vore`. Interpret the intercept in context. Interpret the coefficient `brainwt` in context. Interpret the coefficient for `voreinsecti` in context. Interpret the coefficient for `brainwt:voreinsecti` (Ignore significance, etc.)
+
+```{R}
+library(tidyverse)
+msleep
+msleepModel <- lm(sleep_rem ~ brainwt + vore, data = msleep)
+summary(msleepModel)
+
+msleepModel1 <- lm(sleep_rem ~vore * brainwt, data = msleep)
+summary(msleepModel1)
+```
+*When the animal is carnivore and no brain weight, the amount of rem sleep of animal would be 2.47 hr. When we control the brain weight, there is no different in rem sleep between animal eanting insect and animal take other type of food source. When we control the food sourc, there is no different of brain weight on rem sleep. The brain weight and voreinsecti:brainwt are significantly different based on the level of vore.*
+
+
+### Question 2b (2 pts)
+
+Rerun the same regression as above, but center the `brainwt` variable first by subtracting the mean (use na.rm=T). Which coefficients that you interpreted in 3a (above) changed? Why? Reinterpret any coefficient from part 3a that changed. (Ignore significance, etc.)  
+
+```{R}
+msleep
+msleep$brainwtCenter <- msleep$brainwt - mean(msleep$brainwt, na.rm = T)
+
+model2b <- lm(sleep_rem ~ vore * brainwtCenter, data = msleep)
+summary(model2b)
+```
+*The intercept and other statistic changed when we center the mean of brain weight. When we control the weight, there's a significnat difference in rem sleep between animals eating insect and animal eating other type of food. On the other hand, the statistic of brain weight and voreinsecti:brainwt remains unchanged.*
+
+### Question 2c (2 pts)
+
+Remove NA from vore only and make a plot of `rem_sleep` by `brainwt` using `geom_smooth(method="lm")`. What is the mean value of brainwt? Does it make sense to extrapolate to this value for the `voreinsecti` coefficient?
+
+```{R}
+
+Testmsleep <-  msleep %>% select(sleep_rem, brainwt, vore) %>% na.omit(msleep$vore)
+
+ggplot(Testmsleep, aes(x = brainwt, y = sleep_rem, color = vore)) +
+ geom_point() + geom_smooth(method = "lm")
+
+Testmsleep %>% summarise(mean(brainwt))
+```
+*The mean of brainwt after remove the na from vore is 0.118. We can observe from Q2b that the interaction of voreinsecti:brainCenter is not significant. Therefore it is not make sense to extrapolate this value.*
+
+
+### Question 2d (2 pts)
+
+Regression makes no assumptions about the distribution of the predictors, and taking the log will fix this issue. Take the natural log of brainwt, then center it (don't forget `na.rm=T`), and then rerun the model from 3c (note that you can't just take the log of the centered variable). Use heteroskedasticity robust standard errors `coeftest(fit, vcov=vcovHC(fit))`. Interpret the one significant effect and, finally, discuss significance and your decision with respect to the null hypothesis
+
+```{R}
+Testmsleep$brainLog <- log(Testmsleep$brainwt) - mean(log(Testmsleep$brainwt),na.rm = T)
+
+mymodel2d <-lm(sleep_rem ~ vore * brainLog, data =Testmsleep )
+summary(mymodel2d)
+
+coeftest(mymodel2d, vcov=vcovHC(mymodel2d))
+```
+*There's a significnat difference in rem sleep between animal vore herbs and other type of food source. We reject the null hypothesis that the vore of animal does not explain the different of rem sleep.*
+
+### Question 2e (2 pts)
+
+Make a new plot like 3c (remove NAs from `vore` manually), but this time use the log of `brainwt` on the x-axis. Still use `geom_smooth(method="lm")`. Where can you see the significant effect on the plot (describe in words)?
+
+```{R}
+ggplot(Testmsleep, aes(x= brainLog, y = sleep_rem, color = vore)) + geom_point() + geom_smooth(method = "lm")
+
+```
+*In the plot with log brain weight, the assumption are met. Therefore, the result are close to normal ditribtution. The slopes are more smooth. This result is closed to real relationship between the brain weight and rem sleep.*
+
+
+
+```{R, echo=F}
+## DO NOT DELETE THIS BLOCK!
+sessionInfo()
+Sys.time()
+Sys.info()
+```

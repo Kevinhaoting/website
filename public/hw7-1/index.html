@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="HaoTing Huang" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>HW 7</title>
+    <meta name="generator" content="Hugo 0.60.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/hw7-1/">HW 7</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="haoting-huang-hh25923" class="section level2">
+<h2>HaoTing Huang hh25923</h2>
+<p><strong>This homework is due on Nov 3, 2019 at 11:59pm. Please submit as a pdf file on Canvas.</strong></p>
+<p><em>For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.</em></p>
+<blockquote>
+<h3 id="how-to-submit-this-assignment">How to submit this assignment</h3>
+<p>All homework assignments will be completed using R Markdown. These <code>.Rmd</code> files consist of text/syntax (formatted using Markdown) alongside embedded R code.
+When you have completed the assignment (by adding R code inside codeblocks and supporting text outside of the codeblocks), create your document as follows:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>Click the “Knit” button (above) to create an .html file</li>
+<li>Open the html file in your internet browser to view</li>
+<li>Go to <code>File &gt; Print</code> and print your .html file to a .pdf</li>
+<li>(or knit to PDF)</li>
+<li>Upload the .pdf file to Canvas</li>
+</ul>
+</blockquote>
+<hr />
+<div id="question-1a-3-pts" class="section level3">
+<h3>Question 1a (3 pts)</h3>
+<ul>
+<li>Run the following code to generate some play data (variables x and y). Then, regress y on x and call summary() on the fitted model. Make a scatterplot (either base R or ggplot) to eyeball whether homoskedasticity is met (i.e., do the points fan out as you go up the line?). Then, run the Breuch-Pagan test <code>bptest()</code> to formally test this null hypothesis. If you reject the null hypothesis of homoskedasticity, redo the regression using heteroskedasticity robust standard errors. How does this change your t-statistics and p-values?</li>
+</ul>
+<p>You will need the <code>lmtest</code> package and the <code>sandwich</code> package in order to do things like <code>bptest(fit)</code> and <code>coeftest(fit,vcov=vcovHC(fit))</code>; install them if you haven’t.</p>
+<pre class="r"><code>library(tidyverse)
+library(sandwich)
+library(lmtest)
+#install.packages(&quot;lmtest&quot;)
+#installed.packages(&quot;sandwich&quot;)
+## IMPORTANT: type version into your console to see what version of R you are running
+## If 3.6 or later, uncomment the following line and run it before set.seed(348); otherwise do not!
+# RNGkind(sample.kind=&quot;Rounding&quot;)
+
+set.seed(348)
+x &lt;- runif(55, 0, 1)
+#x
+y &lt;- .1 * rnorm(55, x, x)
+#y
+dataHW7 &lt;- data.frame(x,y)
+mymodelHW7 &lt;- lm(y~x, data = dataHW7)
+summary(mymodelHW7)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x, data = dataHW7)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.093907 -0.022208 -0.004808  0.024363  0.201202 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept) 0.009742   0.013112   0.743   0.4608  
+## x           0.048460   0.023442   2.067   0.0436 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.04878 on 53 degrees of freedom
+## Multiple R-squared:  0.07461,    Adjusted R-squared:  0.05715 
+## F-statistic: 4.273 on 1 and 53 DF,  p-value: 0.04361</code></pre>
+<pre class="r"><code>resmymodelHW7 &lt;-mymodelHW7$residuals
+#resmymodelHW7
+fitvalHW7 &lt;- mymodelHW7$fitted.values
+# ggplot() + geom_histogram(aes(resmymodelHW7))
+ggplot() + geom_qq(aes(sample = resmymodelHW7)) + geom_qq_line(aes(sample = resmymodelHW7))</code></pre>
+<p><img src="/HW7-1_files/figure-html/unnamed-chunk-1-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#summary(mymodelHW7)
+
+
+# Breuch-Pagan test
+bptest(mymodelHW7) # (p &lt; 0.05, reject the null of the model is homo)</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  mymodelHW7
+## BP = 6.118, df = 1, p-value = 0.01338</code></pre>
+<pre class="r"><code># using robust
+coeftest(mymodelHW7, vcov = vcovHC(mymodelHW7))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept) 0.0097416  0.0099737  0.9767  0.33314  
+## x           0.0484604  0.0282551  1.7151  0.09217 .
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><em>Eyeball the ggplot, the homoskedasticiyt is not met. Breuch-Pagan test also indicate that the homoskedasticity is not met. So I use the heteroskedasticity robust standard errors to do the regression. My original p value is 0.0436 and my new p value is 0.09217. My t statistic change from 2.067 to 1.7151.</em></p>
+</div>
+<div id="question-1b-3-pts" class="section level3">
+<h3>Question 1b (3 pts)</h3>
+<ul>
+<li>Run the following code to generate more play data (new variables x and y). Then, regress y on x and call summary. Make a scatterplot (either base R or ggplot) to eyeball whether homoskedasticity is met. Then, use the Breuch-Pagan test <code>bptest()</code> to formally test this null hypothesis. Regardless of the result, redo the regression using heteroskedasticity robust standard errors. How does this change your t-statistics and p-values? How does this change differ from before (both in direction and magnitude)?</li>
+</ul>
+<pre class="r"><code>## IMPORTANT: type version into your console to see what version of R you are running
+## If 3.6 or later, uncomment the following line and run it before set.seed(348); otherwise do not!
+# RNGkind(sample.kind=&quot;Rounding&quot;)
+set.seed(348)
+x &lt;- runif(55, 0, 1)
+y &lt;- .1 * rnorm(55, x, .6)
+data2HW7 &lt;- data.frame(x,y)
+mymodel2HW7 &lt;- lm(y~x, data = data2HW7)
+summary(mymodel2HW7)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x, data = data2HW7)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.118236 -0.028612 -0.006171  0.038243  0.134009 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept) 0.005426   0.014775   0.367   0.7149  
+## x           0.062463   0.026416   2.365   0.0217 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.05496 on 53 degrees of freedom
+## Multiple R-squared:  0.09543,    Adjusted R-squared:  0.07836 
+## F-statistic: 5.591 on 1 and 53 DF,  p-value: 0.02174</code></pre>
+<pre class="r"><code>resmymodel2HW7 &lt;-mymodel2HW7$residuals
+fitval2HW7 &lt;- mymodel2HW7$fitted.values
+
+ggplot() + geom_qq(aes(sample = resmymodel2HW7)) + geom_qq_line(aes(sample = resmymodel2HW7))</code></pre>
+<p><img src="/HW7-1_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>bptest(mymodel2HW7) # p &gt; 0.05, we cant reject the null --&gt; the model is homo</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  mymodel2HW7
+## BP = 0.19935, df = 1, p-value = 0.6552</code></pre>
+<pre class="r"><code>coeftest(mymodel2HW7, vcov = vcovHC(mymodel2HW7))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept) 0.0054256  0.0149121  0.3638   0.7174  
+## x           0.0624628  0.0254661  2.4528   0.0175 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><em>My p value chagne from 0.0217 to 0.0175. My t value chagne from 2.365 to 2.453 The magnitude of the chagnes are smaller than the changes in Q1.</em></p>
+</div>
+<div id="question-1c-3-pts" class="section level3">
+<h3>Question 1c (3 pts)</h3>
+<p>Using <code>x</code> and <code>y</code> from 1b, calculate the bootstrap standard error of the slope by resampling observations (i.e., rows) from your dataframe with replacement. Calculate the boostrap standard error of the slope by resampling residuals (from the model fit in 2b, with replacement); then add them to the fitted values to get the new “data”, compute the regression coefficient, save, and repeat. For each, use 5000 iterations. How do your results compare with the standard errors from question 1b? Would you still reject the null hypothesis using these standard errors?</p>
+<pre class="r"><code>## IMPORTANT: type version into your console to see what version of R you are running
+## If 3.6 or later, uncomment the following line and run it before set.seed(348); otherwise do not!
+# RNGkind(sample.kind=&quot;Rounding&quot;)
+set.seed(348)
+x &lt;- runif(55, 0, 1)
+y &lt;- .1 * rnorm(55, x, .6)
+data3HW7 &lt;- data.frame(x,y)
+
+
+mymodel3HW7 &lt;- lm(y~x, data = data3HW7)
+resmymodel3HW7 &lt;-mymodel3HW7$residuals
+fitval3HW7 &lt;- mymodel3HW7$fitted.values
+
+
+resid_resampHW7 &lt;- replicate(5000,{
+  new_residsHW7 &lt;- sample(resmymodel3HW7, replace = TRUE)
+  data3HW7$new_y &lt;-fitval3HW7 + new_residsHW7
+  mymodel3HW7 &lt;- lm(new_y~x, data = data3HW7)
+  coef(mymodel3HW7)
+})
+
+resid_resampHW7 %&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept)          x
+## 1  0.01474914 0.02601614</code></pre>
+<pre class="r"><code>coeftest(mymodel2HW7, vcov = vcovHC(mymodel2HW7))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##              Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept) 0.0054256  0.0149121  0.3638   0.7174  
+## x           0.0624628  0.0254661  2.4528   0.0175 *
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><em>The result SE from boostrap is 0.02601614. It is similart to the result if 1b 0.0254661 and we still reject the null.</em></p>
+</div>
+<div id="question-2a-3-pts" class="section level3">
+<h3>Question 2a (3 pts)</h3>
+<p>Using the <code>msleep</code> data (in ggplot2), regress <code>sleep_rem</code> on the interaction of <code>brainwt</code> and <code>vore</code>. Interpret the intercept in context. Interpret the coefficient <code>brainwt</code> in context. Interpret the coefficient for <code>voreinsecti</code> in context. Interpret the coefficient for <code>brainwt:voreinsecti</code> (Ignore significance, etc.)</p>
+<pre class="r"><code>library(tidyverse)
+msleep</code></pre>
+<pre><code>## # A tibble: 83 x 11
+##    name  genus vore  order conservation sleep_total sleep_rem sleep_cycle
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+##  1 Chee… Acin… carni Carn… lc                  12.1      NA        NA    
+##  2 Owl … Aotus omni  Prim… &lt;NA&gt;                17         1.8      NA    
+##  3 Moun… Aplo… herbi Rode… nt                  14.4       2.4      NA    
+##  4 Grea… Blar… omni  Sori… lc                  14.9       2.3       0.133
+##  5 Cow   Bos   herbi Arti… domesticated         4         0.7       0.667
+##  6 Thre… Brad… herbi Pilo… &lt;NA&gt;                14.4       2.2       0.767
+##  7 Nort… Call… carni Carn… vu                   8.7       1.4       0.383
+##  8 Vesp… Calo… &lt;NA&gt;  Rode… &lt;NA&gt;                 7        NA        NA    
+##  9 Dog   Canis carni Carn… domesticated        10.1       2.9       0.333
+## 10 Roe … Capr… herbi Arti… lc                   3        NA        NA    
+## # … with 73 more rows, and 3 more variables: awake &lt;dbl&gt;, brainwt &lt;dbl&gt;,
+## #   bodywt &lt;dbl&gt;</code></pre>
+<pre class="r"><code>msleepModel &lt;- lm(sleep_rem ~ brainwt + vore, data = msleep)
+summary(msleepModel)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = sleep_rem ~ brainwt + vore, data = msleep)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.5428 -0.7066 -0.1873  0.4231  2.7490 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   2.4726     0.4311   5.736 1.31e-06 ***
+## brainwt      -0.8722     0.6804  -1.282   0.2077    
+## voreherbi    -1.1378     0.5019  -2.267   0.0292 *  
+## voreinsecti   1.0705     0.6770   1.581   0.1221    
+## voreomni     -0.3161     0.4989  -0.634   0.5302    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.047 on 38 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.3397, Adjusted R-squared:  0.2702 
+## F-statistic: 4.887 on 4 and 38 DF,  p-value: 0.002802</code></pre>
+<pre class="r"><code>msleepModel1 &lt;- lm(sleep_rem ~vore * brainwt, data = msleep)
+summary(msleepModel1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = sleep_rem ~ vore * brainwt, data = msleep)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.32515 -0.65057 -0.09685  0.43587  2.80300 
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)          2.68511    0.48162   5.575  2.8e-06 ***
+## voreherbi           -1.20881    0.55723  -2.169  0.03693 *  
+## voreinsecti         -0.04121    0.72892  -0.057  0.95524    
+## voreomni            -0.58505    0.54330  -1.077  0.28891    
+## brainwt             -3.42607    3.49182  -0.981  0.33324    
+## voreherbi:brainwt    1.42876    3.69597   0.387  0.70141    
+## voreinsecti:brainwt 46.01707   13.95225   3.298  0.00224 ** 
+## voreomni:brainwt     2.94134    3.56621   0.825  0.41508    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.9408 on 35 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.5087, Adjusted R-squared:  0.4104 
+## F-statistic: 5.176 on 7 and 35 DF,  p-value: 0.0004084</code></pre>
+<p><em>When the animal is carnivore and no brain weight, the amount of rem sleep of animal would be 2.47 hr. When we control the brain weight, there is no different in rem sleep between animal eanting insect and animal take other type of food source. When we control the food sourc, there is no different of brain weight on rem sleep. The brain weight and voreinsecti:brainwt are significantly different based on the level of vore.</em></p>
+</div>
+<div id="question-2b-2-pts" class="section level3">
+<h3>Question 2b (2 pts)</h3>
+<p>Rerun the same regression as above, but center the <code>brainwt</code> variable first by subtracting the mean (use na.rm=T). Which coefficients that you interpreted in 3a (above) changed? Why? Reinterpret any coefficient from part 3a that changed. (Ignore significance, etc.)</p>
+<pre class="r"><code>msleep</code></pre>
+<pre><code>## # A tibble: 83 x 11
+##    name  genus vore  order conservation sleep_total sleep_rem sleep_cycle
+##    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+##  1 Chee… Acin… carni Carn… lc                  12.1      NA        NA    
+##  2 Owl … Aotus omni  Prim… &lt;NA&gt;                17         1.8      NA    
+##  3 Moun… Aplo… herbi Rode… nt                  14.4       2.4      NA    
+##  4 Grea… Blar… omni  Sori… lc                  14.9       2.3       0.133
+##  5 Cow   Bos   herbi Arti… domesticated         4         0.7       0.667
+##  6 Thre… Brad… herbi Pilo… &lt;NA&gt;                14.4       2.2       0.767
+##  7 Nort… Call… carni Carn… vu                   8.7       1.4       0.383
+##  8 Vesp… Calo… &lt;NA&gt;  Rode… &lt;NA&gt;                 7        NA        NA    
+##  9 Dog   Canis carni Carn… domesticated        10.1       2.9       0.333
+## 10 Roe … Capr… herbi Arti… lc                   3        NA        NA    
+## # … with 73 more rows, and 3 more variables: awake &lt;dbl&gt;, brainwt &lt;dbl&gt;,
+## #   bodywt &lt;dbl&gt;</code></pre>
+<pre class="r"><code>msleep$brainwtCenter &lt;- msleep$brainwt - mean(msleep$brainwt, na.rm = T)
+
+model2b &lt;- lm(sleep_rem ~ vore * brainwtCenter, data = msleep)
+summary(model2b)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = sleep_rem ~ vore * brainwtCenter, data = msleep)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.32515 -0.65057 -0.09685  0.43587  2.80300 
+## 
+## Coefficients:
+##                           Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)                 1.7204     0.7920   2.172  0.03670 * 
+## voreherbi                  -0.8065     0.8475  -0.952  0.34780   
+## voreinsecti                12.9163     3.6426   3.546  0.00113 **
+## voreomni                    0.2432     0.8301   0.293  0.77129   
+## brainwtCenter              -3.4261     3.4918  -0.981  0.33324   
+## voreherbi:brainwtCenter     1.4288     3.6960   0.387  0.70141   
+## voreinsecti:brainwtCenter  46.0171    13.9522   3.298  0.00224 **
+## voreomni:brainwtCenter      2.9413     3.5662   0.825  0.41508   
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.9408 on 35 degrees of freedom
+##   (40 observations deleted due to missingness)
+## Multiple R-squared:  0.5087, Adjusted R-squared:  0.4104 
+## F-statistic: 5.176 on 7 and 35 DF,  p-value: 0.0004084</code></pre>
+<p><em>The intercept and other statistic changed when we center the mean of brain weight. When we control the weight, there’s a significnat difference in rem sleep between animals eating insect and animal eating other type of food. On the other hand, the statistic of brain weight and voreinsecti:brainwt remains unchanged.</em></p>
+</div>
+<div id="question-2c-2-pts" class="section level3">
+<h3>Question 2c (2 pts)</h3>
+<p>Remove NA from vore only and make a plot of <code>rem_sleep</code> by <code>brainwt</code> using <code>geom_smooth(method=&quot;lm&quot;)</code>. What is the mean value of brainwt? Does it make sense to extrapolate to this value for the <code>voreinsecti</code> coefficient?</p>
+<pre class="r"><code>Testmsleep &lt;-  msleep %&gt;% select(sleep_rem, brainwt, vore) %&gt;% na.omit(msleep$vore)
+
+ggplot(Testmsleep, aes(x = brainwt, y = sleep_rem, color = vore)) +
+ geom_point() + geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><img src="/HW7-1_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Testmsleep %&gt;% summarise(mean(brainwt))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `mean(brainwt)`
+##             &lt;dbl&gt;
+## 1           0.118</code></pre>
+<p><em>The mean of brainwt after remove the na from vore is 0.118. We can observe from Q2b that the interaction of voreinsecti:brainCenter is not significant. Therefore it is not make sense to extrapolate this value.</em></p>
+</div>
+<div id="question-2d-2-pts" class="section level3">
+<h3>Question 2d (2 pts)</h3>
+<p>Regression makes no assumptions about the distribution of the predictors, and taking the log will fix this issue. Take the natural log of brainwt, then center it (don’t forget <code>na.rm=T</code>), and then rerun the model from 3c (note that you can’t just take the log of the centered variable). Use heteroskedasticity robust standard errors <code>coeftest(fit, vcov=vcovHC(fit))</code>. Interpret the one significant effect and, finally, discuss significance and your decision with respect to the null hypothesis</p>
+<pre class="r"><code>Testmsleep$brainLog &lt;- log(Testmsleep$brainwt) - mean(log(Testmsleep$brainwt),na.rm = T)
+
+mymodel2d &lt;-lm(sleep_rem ~ vore * brainLog, data =Testmsleep )
+summary(mymodel2d)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = sleep_rem ~ vore * brainLog, data = Testmsleep)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -1.3355 -0.6414 -0.1108  0.3551  2.7841 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)           2.68616    0.51912   5.174 9.46e-06 ***
+## voreherbi            -1.41456    0.56768  -2.492   0.0176 *  
+## voreinsecti           2.11308    0.81355   2.597   0.0136 *  
+## voreomni             -0.66239    0.56464  -1.173   0.2487    
+## brainLog             -0.26848    0.33800  -0.794   0.4324    
+## voreherbi:brainLog    0.03404    0.35198   0.097   0.9235    
+## voreinsecti:brainLog  0.85380    0.39093   2.184   0.0357 *  
+## voreomni:brainLog     0.15788    0.34911   0.452   0.6539    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.9155 on 35 degrees of freedom
+## Multiple R-squared:  0.5347, Adjusted R-squared:  0.4416 
+## F-statistic: 5.746 on 7 and 35 DF,  p-value: 0.0001762</code></pre>
+<pre class="r"><code>coeftest(mymodel2d, vcov=vcovHC(mymodel2d))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                       Estimate Std. Error t value  Pr(&gt;|t|)    
+## (Intercept)           2.686157   0.640358  4.1948 0.0001771 ***
+## voreherbi            -1.414562   0.676272 -2.0917 0.0437879 *  
+## voreinsecti           2.113076   3.777819  0.5593 0.5794933    
+## voreomni             -0.662385   0.685994 -0.9656 0.3408765    
+## brainLog             -0.268484   0.450970 -0.5953 0.5554405    
+## voreherbi:brainLog    0.034044   0.458258  0.0743 0.9412025    
+## voreinsecti:brainLog  0.853802   1.145566  0.7453 0.4610604    
+## voreomni:brainLog     0.157875   0.458268  0.3445 0.7325287    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><em>There’s a significnat difference in rem sleep between animal vore herbs and other type of food source. We reject the null hypothesis that the vore of animal does not explain the different of rem sleep.</em></p>
+</div>
+<div id="question-2e-2-pts" class="section level3">
+<h3>Question 2e (2 pts)</h3>
+<p>Make a new plot like 3c (remove NAs from <code>vore</code> manually), but this time use the log of <code>brainwt</code> on the x-axis. Still use <code>geom_smooth(method=&quot;lm&quot;)</code>. Where can you see the significant effect on the plot (describe in words)?</p>
+<pre class="r"><code>ggplot(Testmsleep, aes(x= brainLog, y = sleep_rem, color = vore)) + geom_point() + geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><img src="/HW7-1_files/figure-html/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" />
+<em>In the plot with log brain weight, the assumption are met. Therefore, the result are close to normal ditribtution. The slopes are more smooth. This result is closed to real relationship between the brain weight and rem sleep.</em></p>
+<pre><code>## R version 3.5.1 (2018-07-02)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS  10.15.1
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] lmtest_0.9-37   zoo_1.8-6       sandwich_2.5-1  forcats_0.4.0  
+##  [5] stringr_1.4.0   dplyr_0.8.3     purrr_0.3.3     readr_1.3.1    
+##  [9] tidyr_1.0.0     tibble_2.1.3    ggplot2_3.2.1   tidyverse_1.2.1
+## [13] knitr_1.25     
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_0.2.5 xfun_0.10        haven_2.1.1      lattice_0.20-38 
+##  [5] colorspace_1.4-1 vctrs_0.2.0      generics_0.0.2   htmltools_0.4.0 
+##  [9] yaml_2.2.0       utf8_1.1.4       rlang_0.4.0      pillar_1.4.2    
+## [13] glue_1.3.1       withr_2.1.2      modelr_0.1.5     readxl_1.3.1    
+## [17] lifecycle_0.1.0  munsell_0.5.0    blogdown_0.17    gtable_0.3.0    
+## [21] cellranger_1.1.0 rvest_0.3.4      evaluate_0.14    labeling_0.3    
+## [25] fansi_0.4.0      broom_0.5.2      Rcpp_1.0.2       scales_1.0.0    
+## [29] backports_1.1.5  jsonlite_1.6     hms_0.5.1        digest_0.6.20   
+## [33] stringi_1.4.3    bookdown_0.16    grid_3.5.1       cli_1.1.0       
+## [37] tools_3.5.1      magrittr_1.5     lazyeval_0.2.2   crayon_1.3.4    
+## [41] pkgconfig_2.0.3  zeallot_0.1.0    xml2_1.2.2       lubridate_1.7.4 
+## [45] assertthat_0.2.1 rmarkdown_1.16   httr_1.4.1       rstudioapi_0.10 
+## [49] R6_2.4.0         nlme_3.1-141     compiler_3.5.1</code></pre>
+<pre><code>## [1] &quot;2019-12-10 15:32:24 CST&quot;</code></pre>
+<pre><code>##                                                                                            sysname 
+##                                                                                           &quot;Darwin&quot; 
+##                                                                                            release 
+##                                                                                           &quot;19.0.0&quot; 
+##                                                                                            version 
+## &quot;Darwin Kernel Version 19.0.0: Thu Oct 17 16:17:15 PDT 2019; root:xnu-6153.41.3~29/RELEASE_X86_64&quot; 
+##                                                                                           nodename 
+##                                                                               &quot;macteki-iMac.local&quot; 
+##                                                                                            machine 
+##                                                                                           &quot;x86_64&quot; 
+##                                                                                              login 
+##                                                                                             &quot;root&quot; 
+##                                                                                               user 
+##                                                                                     &quot;KevinHaoTing&quot; 
+##                                                                                     effective_user 
+##                                                                                     &quot;KevinHaoTing&quot;</code></pre>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

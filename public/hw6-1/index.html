@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="HaoTing Huang" />
+    <meta name="description" content="Describe your website">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>HW 6</title>
+    <meta name="generator" content="Hugo 0.60.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/hw6-1/">HW 6</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          January 1, 0001
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="haoting-huang-hh25923" class="section level2">
+<h2>HaoTing Huang hh25923</h2>
+<p><strong>This homework is due on Oct 27, 2019 at 11:59pm. Please submit as a pdf file on Canvas.</strong></p>
+<p><em>For all questions, include the R commands/functions that you used to find your answer. Answers without supporting code will not receive credit.</em></p>
+<blockquote>
+<h3 id="how-to-submit-this-assignment">How to submit this assignment</h3>
+<p>All homework assignments will be completed using R Markdown. These <code>.Rmd</code> files consist of &gt;text/syntax (formatted using Markdown) alongside embedded R code.
+When you have completed the assignment (by adding R code inside codeblocks and supporting text outside of the codeblocks), create your document as follows:</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>Click the “Knit” button (above) to create an .html file</li>
+<li>Open the html file in your internet browser to view</li>
+<li>Go to <code>File &gt; Print</code> and print your .html file to a .pdf</li>
+<li>(or knit to PDF)</li>
+<li>Upload the .pdf file to Canvas</li>
+</ul>
+</blockquote>
+<hr />
+<div id="question-1-2-pts-the-distribution-of-mosquito-weight-for-the-aedes-aegypti-species-is-known-to-be-log-normal-that-is-weight-is-normally-distributed-if-transformed-with-the-natural-log.-untransformed-weights-of-11-female-and-9-male-mosquitoes-are-given-below-mg.-do-the-two-sexes-weigh-the-same-on-average-make-this-data-meet-the-normality-assumption-with-a-transformation-and-perform-a-t-test-in-r-using-t.test.-you-can-assume-the-equal-variances-assumption-was-not-met." class="section level3">
+<h3>Question 1 (2 pts): The distribution of mosquito weight for the Aedes aegypti species is known to be log-normal (that is, weight is normally distributed if transformed with the natural log). Untransformed weights of 11 female and 9 male mosquitoes are given below (mg). Do the two sexes weigh the same on average? Make this data meet the normality assumption with a transformation and perform a t test in R using t.test(). You can assume the equal-variances assumption was not met.</h3>
+<p><strong>Females:</strong> 0.291, 0.208, 0.241, 0.437, 0.228, 0.256, 0.208, 0.234, 0.320, 0.340, 0.150
+<strong>Males:</strong> 0.185, 0.222, 0.149, 0.187, 0.191, 0.219, 0.132, 0.144, 0.140</p>
+<pre class="r"><code>Females &lt;- c(0.291, 0.208, 0.241, 0.437, 0.228, 0.256, 0.208, 0.234, 0.320, 0.340, 0.150)
+Males &lt;- c(0.185, 0.222, 0.149, 0.187, 0.191, 0.219, 0.132, 0.144, 0.140)
+mean(Females)</code></pre>
+<pre><code>## [1] 0.2648182</code></pre>
+<pre class="r"><code>mean(Males)</code></pre>
+<pre><code>## [1] 0.1743333</code></pre>
+<pre class="r"><code>LogF &lt;- log(Females)
+LogM &lt;- log(Males)
+
+t.test(LogF, LogM)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  LogF and LogM
+## t = 3.6469, df = 17.544, p-value = 0.00191
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.1679745 0.6265160
+## sample estimates:
+## mean of x mean of y 
+## -1.366767 -1.764012</code></pre>
+<p><em>I transfer the dataset into natural log dataset and perform the t-test. The p-value is less than 0.05, therefore, we reject the null hypotheseis that there’s no difference between the means of female and male mosquito. In other words the weight of female and male mosquito has significant difference.</em></p>
+</div>
+<div id="question-2-3-pts-build-a-dataframe-with-a-column-for-weight-a-column-for-logweight-and-a-column-for-sex.-after-setting-the-seed-as-specified-below-perform-a-randomization-test-on-the-original-weight-data-and-on-the-log-weight-data.-that-is-for-both-generate-a-distribution-of-5000-mean-differences-on-randomized-data-either-with-a-loop-or-using-replicate.-compute-and-report-two-tailed-p-values-in-both-cases.-do-both-randomization-tests-agree-are-your-conclusions-the-same-as-they-were-above-for-the-parametric-t-test" class="section level3">
+<h3>Question 2 (3 pts): Build a dataframe with a column for weight, a column for logweight, and a column for sex. After setting the seed as specified below, perform a randomization test on the original weight data <em>and</em> on the log weight data. That is, for both, generate a distribution of 5000 mean differences on randomized data (either with a loop or using replicate). Compute and report two-tailed p-values in both cases. Do both randomization tests agree? Are your conclusions the same as they were above for the parametric t test?</h3>
+<pre class="r"><code>set.seed(348)
+dataFrame &lt;- data.frame(sex = c(rep(&quot;Females&quot;,11), rep(&quot;Males&quot;,9)), weight = c(Females,Males), logweight = c(LogF,LogM))
+dataFrame</code></pre>
+<pre><code>##        sex weight  logweight
+## 1  Females  0.291 -1.2344320
+## 2  Females  0.208 -1.5702172
+## 3  Females  0.241 -1.4229583
+## 4  Females  0.437 -0.8278221
+## 5  Females  0.228 -1.4784097
+## 6  Females  0.256 -1.3625778
+## 7  Females  0.208 -1.5702172
+## 8  Females  0.234 -1.4524342
+## 9  Females  0.320 -1.1394343
+## 10 Females  0.340 -1.0788097
+## 11 Females  0.150 -1.8971200
+## 12   Males  0.185 -1.6873995
+## 13   Males  0.222 -1.5050779
+## 14   Males  0.149 -1.9038090
+## 15   Males  0.187 -1.6766467
+## 16   Males  0.191 -1.6554819
+## 17   Males  0.219 -1.5186835
+## 18   Males  0.132 -2.0249534
+## 19   Males  0.144 -1.9379420
+## 20   Males  0.140 -1.9661129</code></pre>
+<pre class="r"><code>dataFrame %&gt;% group_by(sex) %&gt;% summarise(means = mean(weight)) %&gt;% summarise(meanDiff = diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   meanDiff
+##      &lt;dbl&gt;
+## 1  -0.0905</code></pre>
+<pre class="r"><code>dataFrame %&gt;% group_by(sex) %&gt;% summarise(means = mean(logweight)) %&gt;% summarise(meanDiff = diff(means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   meanDiff
+##      &lt;dbl&gt;
+## 1   -0.397</code></pre>
+<pre class="r"><code>original &lt;- vector()
+for(i in 1:5000){
+  temp1 &lt;- data.frame(weight = sample(dataFrame$weight), sex = dataFrame$sex)
+  original[i] &lt;-mean(temp1[temp1$sex == &quot;Females&quot;,]$weight) - mean(temp1[temp1$sex == &quot;Males&quot;,]$weight)
+}
+#{hist(original,main=&quot;&quot;,ylab=&quot;&quot;); abline(v = 0.09048485 ,col=&quot;red&quot;)}
+
+mean(original&gt;0.09048485)*2</code></pre>
+<pre><code>## [1] 0.0016</code></pre>
+<pre class="r"><code># t.test(data = dataFrame, weight~sex)
+
+
+LogWeightdata &lt;- vector()
+for(i in 1:5000){
+  temp2 &lt;- data.frame(logweight = sample(dataFrame$logweight), sex = dataFrame$sex)
+  LogWeightdata[i] &lt;-mean(temp2[temp2$sex == &quot;Females&quot;,]$logweight) - mean(temp2[temp2$sex == &quot;Males&quot;,]$logweight)
+}
+{hist(LogWeightdata,main=&quot;&quot;,ylab=&quot;&quot;); abline(v = 0.3972453  ,col=&quot;red&quot;)}</code></pre>
+<p><img src="/HW6-1_files/figure-html/unnamed-chunk-2-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mean(LogWeightdata &gt; 0.3972453)*2</code></pre>
+<pre><code>## [1] 0.0016</code></pre>
+<pre class="r"><code>t.test(data = dataFrame, logweight~sex)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  logweight by sex
+## t = 3.6469, df = 17.544, p-value = 0.00191
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.1679745 0.6265160
+## sample estimates:
+## mean in group Females   mean in group Males 
+##             -1.366767             -1.764012</code></pre>
+<p><em>Both randomization tests agree and the conclusion the same as above parametric t test. Both randomization test the p values are computed and are both smaller than 0.05. Therefore, we rehect the null hypothese. There IS a significant differnece in the weight of female and mael mosquito.</em></p>
+</div>
+<div id="question-3-3-pts-the-original-mean-difference-in-mosquito-weights-between-the-two-groups-f-m-was-.0905-mg.-now-you-will-create-a-95-ci-for-this-difference-in-means-using-bootstrapping.-resample-from-the-original-male-mosquito-data-with-replacement-using-sample-replacet-resample-from-the-original-female-mosquito-data-with-replacement-with-sample-replacet-take-the-mean-difference-of-these-samples-save-it-and-repeat-this-process-5000-times-either-with-a-loop-or-using-replicate.-what-is-the-mean-of-the-resulting-distribution-report-the-95-ci-of-this-distribution-by-reporting-the-.025-and-the-0.975-percentiles-of-mosquito-weight-differences.-interpret-it-in-a-sentence." class="section level3">
+<h3>Question 3 (3 pts): The original mean difference in mosquito weights between the two groups (F-M) was .0905 mg. Now you will create a 95% CI for this difference in means using bootstrapping. Resample from the original male mosquito data with replacement using sample(…, replace=T), resample from the original female mosquito data with replacement with sample(…, replace=T), take the mean difference of these samples, save it, and repeat this process 5000 times (either with a loop or using replicate). What is the mean of the resulting distribution? Report the 95% CI of this distribution by reporting the .025 and the 0.975 percentiles of mosquito weight differences. Interpret it in a sentence.</h3>
+<pre class="r"><code>diffmean &lt;- vector()
+for(i in 1:5000){
+  ResampleMale &lt;- sample(dataFrame[dataFrame$sex == &quot;Males&quot;,]$weight,replace = T)
+  ResampleFemale &lt;- sample(dataFrame[dataFrame$sex == &quot;Females&quot;,]$weight, replace = T)
+  diffmean[i] &lt;- mean(ResampleFemale) - mean(ResampleMale)
+}
+mean(diffmean)</code></pre>
+<pre><code>## [1] 0.09050705</code></pre>
+<pre class="r"><code>quantile(diffmean,c(.025, .975))</code></pre>
+<pre><code>##       2.5%      97.5% 
+## 0.04531288 0.14069167</code></pre>
+<pre class="r"><code>ggplot()+geom_histogram(aes(diffmean))+geom_vline(xintercept=quantile(diffmean,c(.025,.975)))</code></pre>
+<p><img src="/HW6-1_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><em>The mean of the result distribution is 0.09075606. The values cutting off 2.5% above and below form the 95% CI. That is, we have 95% confident that the mean difference of male and female mosquitos fall in between 0.04416919 and 0.14163157.
+</em></p>
+</div>
+<div id="question-4-3-pts-use-the-dataset-plantgrowth-to-compute-the-ssb-and-ssw-for-a-one-way-anova-compute-these-manually-e.g.-using-dplyr-functions-to-get-group-means-and-then-use-them-to-compute-an-f-statistic.-use-pf...-df1-df2-lower.tailf-on-the-f-statistic-you-generate-to-determine-the-p-value.-compare-this-to-the-output-from-summaryaov-in-r." class="section level3">
+<h3>Question 4 (3 pts): Use the dataset PlantGrowth to compute the SSB and SSW for a one-way ANOVA: Compute these manually (e.g., using dplyr functions to get group means) and then use them to compute an F statistic. Use <code>pf(..., df1=, df2=, lower.tail=F)</code> on the F statistic you generate to determine the p-value. Compare this to the output from summary(aov()) in R.`</h3>
+<pre class="r"><code>PlantGrowth</code></pre>
+<pre><code>##    weight group
+## 1    4.17  ctrl
+## 2    5.58  ctrl
+## 3    5.18  ctrl
+## 4    6.11  ctrl
+## 5    4.50  ctrl
+## 6    4.61  ctrl
+## 7    5.17  ctrl
+## 8    4.53  ctrl
+## 9    5.33  ctrl
+## 10   5.14  ctrl
+## 11   4.81  trt1
+## 12   4.17  trt1
+## 13   4.41  trt1
+## 14   3.59  trt1
+## 15   5.87  trt1
+## 16   3.83  trt1
+## 17   6.03  trt1
+## 18   4.89  trt1
+## 19   4.32  trt1
+## 20   4.69  trt1
+## 21   6.31  trt2
+## 22   5.12  trt2
+## 23   5.54  trt2
+## 24   5.50  trt2
+## 25   5.37  trt2
+## 26   5.29  trt2
+## 27   4.92  trt2
+## 28   6.15  trt2
+## 29   5.80  trt2
+## 30   5.26  trt2</code></pre>
+<pre class="r"><code>Controlnumber &lt;-PlantGrowth%&gt;%filter(group==&quot;ctrl&quot;)%&gt;%summarise(n())
+ControlMean &lt;-PlantGrowth%&gt;%filter(group==&quot;ctrl&quot;)%&gt;%summarise(mean(weight)) %&gt;% pull
+ControlMean</code></pre>
+<pre><code>## [1] 5.032</code></pre>
+<pre class="r"><code>trt1Number &lt;- PlantGrowth%&gt;%filter(group==&quot;trt1&quot;)%&gt;%summarise(n()) %&gt;% pull
+trt1Number</code></pre>
+<pre><code>## [1] 10</code></pre>
+<pre class="r"><code>trt1Mean&lt;-PlantGrowth%&gt;%filter(group==&quot;trt1&quot;)%&gt;%summarise(mean(weight))%&gt;%pull
+trt1Mean</code></pre>
+<pre><code>## [1] 4.661</code></pre>
+<pre class="r"><code>trt2Number &lt;-PlantGrowth%&gt;%filter(group==&quot;trt2&quot;)%&gt;%summarise(n()) 
+
+
+trt2Mean &lt;-PlantGrowth%&gt;%filter(group==&quot;trt2&quot;)%&gt;%summarise(mean(weight))%&gt;%pull
+trt2Mean</code></pre>
+<pre><code>## [1] 5.526</code></pre>
+<pre class="r"><code>AllMean&lt;-mean(PlantGrowth$weight)
+AllMean</code></pre>
+<pre><code>## [1] 5.073</code></pre>
+<pre class="r"><code>SSB &lt;- sum((Controlnumber*(ControlMean-AllMean)^2)+(trt1Number*(trt1Mean-AllMean)^2)+(trt2Number*(trt2Mean-AllMean)^2))
+SSB</code></pre>
+<pre><code>## [1] 3.76634</code></pre>
+<pre class="r"><code>SSW&lt;- sum(c((PlantGrowth[PlantGrowth$group == &quot;ctrl&quot;, &quot;weight&quot;] - ControlMean)^2,
+ (PlantGrowth[PlantGrowth$group == &quot;trt1&quot;, &quot;weight&quot;] - trt1Mean)^2,
+ (PlantGrowth[PlantGrowth$group == &quot;trt2&quot;, &quot;weight&quot;] - trt2Mean)^2))
+SSW</code></pre>
+<pre><code>## [1] 10.49209</code></pre>
+<pre class="r"><code>F = (SSB / 2) / (SSW / 27)
+F</code></pre>
+<pre><code>## [1] 4.846088</code></pre>
+<pre class="r"><code>pf(F, df1 = 2, df2 = 27, lower.tail = FALSE)</code></pre>
+<pre><code>## [1] 0.01590996</code></pre>
+<pre class="r"><code>summary(aov(weight~group,data=PlantGrowth))</code></pre>
+<pre><code>##             Df Sum Sq Mean Sq F value Pr(&gt;F)  
+## group        2  3.766  1.8832   4.846 0.0159 *
+## Residuals   27 10.492  0.3886                 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><em>The F and pf value from manual-compute anova mathc the result of anova test from R. Pf &lt;0.05 so we reject the hypothesis. There’s a significant difference in mean of the three groups in PlantGrowth data.</em></p>
+</div>
+<div id="question-5-4-pts-using-the-pottery-dataset-from-last-weeks-lab-compute-a-manova-testing-whether-at-least-one-of-the-five-response-variables-chemical-compositions-differ-by-site-use-manovacbindy1y2y3...xdatadata-and-report-the-results-in-writing.-dont-worry-about-assumptions-there-are-lots.-if-it-is-significant-which-of-the-elements-differ-by-site-report-full-anova-results-for-each-response-variable.-use-for-the-ones-that-differ-which-sites-are-different-that-is-perform-posthoc-t-tests-for-all-5-anovas-using-pairwise.t.test...p.adjnone.-you-do-not-have-to-write-anything-up-for-the-post-hoc-tests.-how-many-hypothesis-tests-have-you-done-in-all-what-is-the-probability-that-you-have-made-at-least-one-type-i-error-i.e.-what-is-the-overall-type-i-error-rate-what-boneferroni-adjusted-significance-level-should-you-use-if-you-want-to-keep-the-overall-type-i-error-rate-at-.05-which-of-your-post-hoc-tests-that-were-significant-before-the-adjustment-are-no-longer-significant" class="section level3">
+<h3>Question 5 (4 pts): Using the Pottery dataset from last week’s lab, compute a MANOVA testing whether at least one of the five response variables (chemical compositions) differ by Site: use <code>manova(cbind(Y1,Y2,Y3...)~X,data=data)</code> and report the results in writing. Don’t worry about assumptions (there are lots). If it is significant, which of the elements differ by site? Report full ANOVA results for each response variable. Use For the ones that differ, which sites are different? That is, perform posthoc t-tests for all 5 ANOVAs using <code>pairwise.t.test(...,p.adj=&quot;none&quot;)</code>. You do not have to write anything up for the post hoc tests. How many hypothesis tests have you done in all? What is the probability that you have made at least one type I error (i.e., what is the overall type-I error rate)? What (boneferroni adjusted) significance level should you use if you want to keep the overall type I error rate at .05? Which of your post hoc tests that were significant before the adjustment are no longer significant?</h3>
+<pre class="r"><code>pots&lt;-read.csv(&quot;http://www.nathanielwoodward.com/Pottery.csv&quot;)
+
+covmats&lt;-pots%&gt;%group_by(Site)%&gt;%do(covs=cov(.[3:7]))
+for(i in 1:4){print(covmats$covs[i])}</code></pre>
+<pre><code>## [[1]]
+##          Al       Fe        Mg       Ca        Na
+## Al  2.75200 -0.75330 -0.019900  0.04445 -0.007950
+## Fe -0.75330  0.54172  0.029260 -0.00053 -0.001620
+## Mg -0.01990  0.02926  0.004030  0.00041 -0.000085
+## Ca  0.04445 -0.00053  0.000410  0.00117 -0.000220
+## Na -0.00795 -0.00162 -0.000085 -0.00022  0.000120
+## 
+## [[1]]
+##        Al       Fe       Mg       Ca      Na
+## Al  0.020  0.00500  0.01700  0.00100 -0.0020
+## Fe  0.005  0.00125  0.00425  0.00025 -0.0005
+## Mg  0.017  0.00425  0.01445  0.00085 -0.0017
+## Ca  0.001  0.00025  0.00085  0.00005 -0.0001
+## Na -0.002 -0.00050 -0.00170 -0.00010  0.0002
+## 
+## [[1]]
+##         Al        Fe        Mg       Ca       Na
+## Al  3.1520 -0.546700  0.056100  0.03990  0.03810
+## Fe -0.5467  0.190070 -0.008885 -0.00519 -0.00301
+## Mg  0.0561 -0.008885  0.001030  0.00067  0.00068
+## Ca  0.0399 -0.005190  0.000670  0.00068  0.00057
+## Na  0.0381 -0.003010  0.000680  0.00057  0.00078
+## 
+## [[1]]
+##             Al           Fe          Mg            Ca           Na
+## Al  1.89631868  0.944236264 0.034324176 -0.0178406593 0.0361813187
+## Fe  0.94423626  0.617110440 0.033946703 -0.0101972527 0.0065983516
+## Mg  0.03432418  0.033946703 1.184224725  0.0330928571 0.0020719780
+## Ca -0.01784066 -0.010197253 0.033092857  0.0033873626 0.0006752747
+## Na  0.03618132  0.006598352 0.002071978  0.0006752747 0.0150379121</code></pre>
+<pre class="r"><code>manova1 &lt;-manova(cbind(Al,Fe,Mg,Ca,Na)~Site, data=pots)
+summary(manova1)</code></pre>
+<pre><code>##           Df Pillai approx F num Df den Df    Pr(&gt;F)    
+## Site       3 1.5539   4.2984     15     60 2.413e-05 ***
+## Residuals 22                                            
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>summary.aov(manova1)</code></pre>
+<pre><code>##  Response Al :
+##             Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Site         3 175.610  58.537  26.669 1.627e-07 ***
+## Residuals   22  48.288   2.195                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Fe :
+##             Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Site         3 134.222  44.741  89.883 1.679e-12 ***
+## Residuals   22  10.951   0.498                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Mg :
+##             Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## Site         3 103.35  34.450   49.12 6.452e-10 ***
+## Residuals   22  15.43   0.701                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Ca :
+##             Df   Sum Sq  Mean Sq F value    Pr(&gt;F)    
+## Site         3 0.204703 0.068234  29.157 7.546e-08 ***
+## Residuals   22 0.051486 0.002340                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response Na :
+##             Df  Sum Sq  Mean Sq F value    Pr(&gt;F)    
+## Site         3 0.25825 0.086082  9.5026 0.0003209 ***
+## Residuals   22 0.19929 0.009059                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code># Posthoc
+pairwise.t.test(pots$Al,pots$Site,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  pots$Al and pots$Site 
+## 
+##            AshleyRails Caldicot IsleThorns
+## Caldicot   0.00016     -        -         
+## IsleThorns 0.36866     3.0e-05  -         
+## Llanedyrn  3.3e-06     0.44848  2.7e-07   
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(pots$Fe,pots$Site,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  pots$Fe and pots$Site 
+## 
+##            AshleyRails Caldicot IsleThorns
+## Caldicot   1.2e-06     -        -         
+## IsleThorns 0.658       2.6e-06  -         
+## Llanedyrn  6.0e-12     0.086    1.4e-11   
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(pots$Mg,pots$Site,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  pots$Mg and pots$Site 
+## 
+##            AshleyRails Caldicot IsleThorns
+## Caldicot   0.00013     -        -         
+## IsleThorns 0.89901     0.00016  -         
+## Llanedyrn  2.2e-09     0.13917  2.9e-09   
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(pots$Ca,pots$Site,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  pots$Ca and pots$Site 
+## 
+##            AshleyRails Caldicot IsleThorns
+## Caldicot   4.8e-06     -        -         
+## IsleThorns 0.405       1.1e-06  -         
+## Llanedyrn  5.4e-06     0.019    5.2e-07   
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(pots$Na,pots$Site,p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  pots$Na and pots$Site 
+## 
+##            AshleyRails Caldicot IsleThorns
+## Caldicot   0.98019     -        -         
+## IsleThorns 0.92150     0.96039  -         
+## Llanedyrn  0.00049     0.01068  0.00065   
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code># type 1
+1-(1-0.05)^11</code></pre>
+<pre><code>## [1] 0.4311999</code></pre>
+<pre class="r"><code>&quot;Adjusted alpha&quot;</code></pre>
+<pre><code>## [1] &quot;Adjusted alpha&quot;</code></pre>
+<pre class="r"><code>0.05/11</code></pre>
+<pre><code>## [1] 0.004545455</code></pre>
+<p><em>In the Manova test, p is way smaller than 0.05. Therefore, at least one of the five response variables (chemical compositions) differ by Site. In anova test, every element has p value smaller than 0.05, so all elements are siginificantly different by sites. I run 11 test and the overall type 1 error is 0.4311999, therefore the adjusted alpha is 0.004545455.</em></p>
+</div>
+<div id="question-6-2-points-do-a-permanova-on-the-pottery-dataset.-can-use-adonis-function-in-vegan-package-but-bonus-point-if-you-handcode-the-sampling-distribution-is-your-p-value-larger-or-smaller-than-in-the-parametric-manova-why-might-that-be" class="section level3">
+<h3>Question 6 (2 points): Do a PERMANOVA on the Pottery dataset. Can use adonis() function in vegan <code>package</code>, but bonus point if you handcode the sampling distribution! Is your p-value larger or smaller than in the parametric MANOVA? Why might that be?</h3>
+<pre class="r"><code>library(vegan)
+dis&lt;-pots%&gt;%select(Al,Fe,Mg,Ca,Na)%&gt;%dist()
+adonis(dis~Site,data=pots)</code></pre>
+<pre><code>## 
+## Call:
+## adonis(formula = dis ~ Site, data = pots) 
+## 
+## Permutation: free
+## Number of permutations: 999
+## 
+## Terms added sequentially (first to last)
+## 
+##           Df SumsOfSqs MeanSqs F.Model      R2 Pr(&gt;F)    
+## Site       3    413.65 137.882  40.489 0.84665  0.001 ***
+## Residuals 22     74.92   3.405         0.15335           
+## Total     25    488.56                 1.00000           
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><em>The p value in PERMANOVA test is way larger than the parametric manova test. This is because the Permoanova test is non-parametric, so the PERMANOVA test will still work when the assumptionsare not met.</em></p>
+</div>
+<div id="question-7-3-pts-make-the-pottery-dataset-long-by-pivoting-all-of-the-element-names-into-a-column-and-all-of-the-values-into-a-column.-use-that-data-to-make-a-plot-showing-the-average-abundance-of-each-element-at-each-site-using-statsummary-by-mapping-site-to-x-values-to-y-and-then-faceting-by-element-set-scalesfree.-add-bootstrapped-95-ci-for-each-mean-with-geom_errorbarstatsummaryfun.datamean_cl_boot-or-by-computing-them-manually." class="section level3">
+<h3>Question 7: (3 pts) Make the pottery dataset long by pivoting all of the element names into a column and all of the values into a column. Use that data to make a plot showing the average abundance of each element at each site (using stat=“summary”) by mapping Site to x, values to y, and then faceting by element (set scales=‘free’). Add bootstrapped 95% CI for each mean with <code>geom_errorbar(stat=&quot;summary&quot;,fun.data=mean_cl_boot)</code>, or by computing them manually.</h3>
+<pre class="r"><code>longPots &lt;-pots%&gt;%pivot_longer(cols = Al:Na,names_to = &quot;Element Names&quot;,values_to = &quot;Value&quot;)
+
+longPots%&gt;%ggplot(aes(Site,Value))+ geom_bar(stat=&quot;summary&quot;, fun.y=mean)+
+ geom_errorbar(stat=&quot;summary&quot;,fun.data=mean_cl_boot)+ facet_wrap(~`Element Names`,scales = &#39;free&#39;)</code></pre>
+<p><img src="/HW6-1_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre><code>## R version 3.5.1 (2018-07-02)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS  10.15.1
+## 
+## Matrix products: default
+## BLAS: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.5/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] vegan_2.5-6     lattice_0.20-38 permute_0.9-5   dplyr_0.8.3    
+## [5] tidyr_1.0.0     ggplot2_3.2.1   knitr_1.25     
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_0.2.5    xfun_0.10           purrr_0.3.3        
+##  [4] splines_3.5.1       colorspace_1.4-1    vctrs_0.2.0        
+##  [7] htmltools_0.4.0     yaml_2.2.0          mgcv_1.8-24        
+## [10] base64enc_0.1-3     utf8_1.1.4          survival_2.44-1.1  
+## [13] rlang_0.4.0         pillar_1.4.2        foreign_0.8-72     
+## [16] glue_1.3.1          withr_2.1.2         RColorBrewer_1.1-2 
+## [19] lifecycle_0.1.0     stringr_1.4.0       munsell_0.5.0      
+## [22] blogdown_0.17       gtable_0.3.0        htmlwidgets_1.5.1  
+## [25] evaluate_0.14       labeling_0.3        latticeExtra_0.6-28
+## [28] parallel_3.5.1      fansi_0.4.0         htmlTable_1.13.2   
+## [31] Rcpp_1.0.2          acepack_1.4.1       checkmate_1.9.4    
+## [34] backports_1.1.5     scales_1.0.0        Hmisc_4.2-0        
+## [37] gridExtra_2.3       digest_0.6.20       stringi_1.4.3      
+## [40] bookdown_0.16       grid_3.5.1          cli_1.1.0          
+## [43] tools_3.5.1         magrittr_1.5        lazyeval_0.2.2     
+## [46] tibble_2.1.3        Formula_1.2-3       cluster_2.1.0      
+## [49] crayon_1.3.4        pkgconfig_2.0.3     zeallot_0.1.0      
+## [52] MASS_7.3-51.4       Matrix_1.2-17       data.table_1.12.6  
+## [55] rstudioapi_0.10     assertthat_0.2.1    rmarkdown_1.16     
+## [58] rpart_4.1-15        R6_2.4.0            nnet_7.3-12        
+## [61] nlme_3.1-141        compiler_3.5.1</code></pre>
+<pre><code>## [1] &quot;2019-12-10 15:33:02 CST&quot;</code></pre>
+<pre class="r"><code>Sys.info()</code></pre>
+<pre><code>##                                                                                            sysname 
+##                                                                                           &quot;Darwin&quot; 
+##                                                                                            release 
+##                                                                                           &quot;19.0.0&quot; 
+##                                                                                            version 
+## &quot;Darwin Kernel Version 19.0.0: Thu Oct 17 16:17:15 PDT 2019; root:xnu-6153.41.3~29/RELEASE_X86_64&quot; 
+##                                                                                           nodename 
+##                                                                               &quot;macteki-iMac.local&quot; 
+##                                                                                            machine 
+##                                                                                           &quot;x86_64&quot; 
+##                                                                                              login 
+##                                                                                             &quot;root&quot; 
+##                                                                                               user 
+##                                                                                     &quot;KevinHaoTing&quot; 
+##                                                                                     effective_user 
+##                                                                                     &quot;KevinHaoTing&quot;</code></pre>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
