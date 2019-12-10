@@ -8,7 +8,7 @@ tags:
 title: Projects
 ---
 ## Projects
-Here are some projects I have been working on:
+Here are some projects and assignments I have been working on:
 
 - [Project 1 Exploratory Data Analysis](/Project1/)
 
